@@ -123,7 +123,9 @@ def seq_range(dat: Any, step: float | None = None, length_out: int | None = None
         return np.linspace(lo, hi, length_out)
     if step is not None:
         return np.arange(lo, hi + step / 2.0, step)
-    return np.array([lo, hi])
+    # R seq_range = seq.int(min, max, ...); with no step/length it is the unit
+    # step sequence min, min+1, ..., <= max (NOT just the two endpoints).
+    return np.arange(lo, hi + 0.5, 1.0)
 
 
 def has_null_unit(x: Any) -> bool:

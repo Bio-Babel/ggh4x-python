@@ -65,11 +65,23 @@ def id_var(x: Sequence[Any], drop: bool = False) -> np.ndarray:
         out = _IdArray(ids.astype(int))
         out.n = n
         return out
-    # non-factor: sort unique (NA last), match
+    # else branch: drop=True (including factors) or non-factor.
+    # R: levels <- sort(unique0(x), na.last = TRUE); id <- match(x, levels).
+    # For a FACTOR, R's sort() orders by LEVEL order (NOT alphabetical) and
+    # keeps only present values (unique0); na.last puts NA at the end.  Earlier
+    # this branch always used np.sort, which alphabetised factor levels and so
+    # mis-ordered facet PANEL/ROW/COL for non-alphabetical factor levels.
     s = pd.Series(list(x))
-    uniq = pd.unique(s.dropna())
-    levels = np.sort(uniq) if len(uniq) else np.array([])
     has_na = bool(s.isna().any())
+    if _is_factor(x):
+        cat = x if isinstance(x, pd.Categorical) else pd.Categorical(x)
+        present = {int(c) for c in np.asarray(cat.codes) if c >= 0}
+        levels = [
+            cat.categories[k] for k in range(len(cat.categories)) if k in present
+        ]
+    else:
+        uniq = pd.unique(s.dropna())
+        levels = list(np.sort(uniq)) if len(uniq) else []
     level_list = list(levels) + ([np.nan] if has_na else [])
     lookup = {v: i + 1 for i, v in enumerate(levels)}
     na_id = len(levels) + 1 if has_na else 0
@@ -217,10 +229,18 @@ def ulevels(x: Sequence[Any]) -> np.ndarray:
     """
     if _is_factor(x):
         cat = x if isinstance(x, pd.Categorical) else pd.Categorical(x)
-        return np.asarray(list(cat.categories))
+        levels = list(cat.categories)
+        # R addNA(x, ifany=TRUE): add an <NA> level when an NA value is present.
+        if bool((np.asarray(cat.codes) < 0).any()):
+            return np.asarray(levels + [np.nan], dtype=object)
+        return np.asarray(levels)
     s = pd.Series(list(x))
     uniq = pd.unique(s.dropna())
-    return np.sort(uniq)
+    sorted_uniq = np.sort(uniq) if len(uniq) else np.array([])
+    # R sort(..., na.last = TRUE): keep NA as the last level when present.
+    if bool(s.isna().any()):
+        return np.asarray(list(sorted_uniq) + [np.nan], dtype=object)
+    return sorted_uniq
 
 
 def unique_combs(df: pd.DataFrame) -> pd.DataFrame:
@@ -233,7 +253,9 @@ def unique_combs(df: pd.DataFrame) -> pd.DataFrame:
     Returns
     -------
     pandas.DataFrame
-        Cross-product of per-column ``ulevels`` (first column varies fastest, like R).
+        Cross-product of per-column ``ulevels``.  Mirrors R
+        ``rev(expand.grid(rev(unique_values)))``: the FIRST column varies
+        slowest and the last varies fastest, and NA levels are included.
     """
     if df.shape[1] == 0:
         return pd.DataFrame()
@@ -241,9 +263,11 @@ def unique_combs(df: pd.DataFrame) -> pd.DataFrame:
     cols = list(df.columns)
     from itertools import product
 
-    rows = list(product(*[level_lists[c] for c in reversed(cols)]))
+    # itertools.product varies its first argument slowest -> first column
+    # slowest, matching R's rev(expand.grid(rev(...))).
+    rows = list(product(*[level_lists[c] for c in cols]))
     data = {c: [] for c in cols}
     for combo in rows:
-        for c, v in zip(reversed(cols), combo):
+        for c, v in zip(cols, combo):
             data[c].append(v)
     return pd.DataFrame(data)[cols]

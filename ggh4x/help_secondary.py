@@ -476,10 +476,13 @@ def _help_sec_ccf(from_: np.ndarray, to: np.ndarray) -> Dict[str, Callable]:
         from_ = from_[lag:]
         to = to[:-lag]
     elif np.sign(lag) == -1:
-        # R: from <- head(from, lag); to <- tail(to, lag)
-        # head(x, lag) with lag<0 drops the last |lag|; tail(x, lag) keeps last |lag|.
+        # R: from <- head(from, lag); to <- tail(to, lag), with lag < 0.
+        # head(x, lag<0) drops the LAST |lag| (keeps first n-|lag|); tail(x,
+        # lag<0) drops the FIRST |lag| (keeps last n-|lag|) — so both keep
+        # n-|lag| elements and stay aligned.  (Previously `to[-(-lag):]` kept
+        # the last |lag|, a length mismatch that raised in _help_sec_fit.)
         from_ = from_[:lag]
-        to = to[-(-lag):]
+        to = to[-lag:]
 
     return _help_sec_fit(from_=from_, to=to)
 

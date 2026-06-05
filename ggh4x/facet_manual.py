@@ -489,7 +489,13 @@ class FacetManual(FacetWrap2):
                 "are dropped: " + ", ".join(dropped)
             )
 
-        lnames = design.names
+        # R: lnames <- attr(layout, "design_names").  The design_names attribute
+        # is set on `design` (validate_design), NOT on `layout`, so in R this is
+        # always NULL and the partial-match warning + reorder below is dead code.
+        # Mirror R exactly by reading it from `layout` (which carries no such
+        # attr) so the block never fires -- reading `design.names` here produced
+        # a spurious "partial match" warning that R never emits.
+        lnames = getattr(layout, "attrs", {}).get("design_names")
         if lnames is not None and len(base.columns) > 0:
             first_col = base.iloc[:, 0]
             isect = [v for v in lnames if v in set(first_col)]

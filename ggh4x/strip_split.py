@@ -266,9 +266,16 @@ class StripSplit(StripNested):
             )
             positions = [positions[i % len(positions)] for i in range(ncol_vars)]
 
-        # id() composite-key table: one column per facet variable.
+        # id() composite-key table controlling the strip hierarchy.  R
+        # (strip_split.R:167-168): ids[[k]] <- id(vars[, 1:k]) — a CUMULATIVE
+        # composite of columns 1..k, not just column k.  Using the single
+        # column k mis-merges strips whenever a non-first facet variable sits
+        # on its own side.
         ids = pd.DataFrame(
-            {var_cols[i]: np.asarray(id(vars[[var_cols[i]]]), dtype=int) for i in range(ncol_vars)}
+            {
+                var_cols[i]: np.asarray(id(vars[var_cols[: i + 1]]), dtype=int)
+                for i in range(ncol_vars)
+            }
         )
 
         layout = layout.reset_index(drop=True)

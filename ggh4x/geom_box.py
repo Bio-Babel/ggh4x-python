@@ -267,16 +267,18 @@ class GeomBox(Geom):
         x = resolve_box(col("xmin"), col("xmax"), col("x"), width)
         y = resolve_box(col("ymin"), col("ymax"), col("y"), height)
 
-        # Check for missing rows. R uses anyNA on each resolved bound; an
-        # entirely-absent axis (resolve_box -> None) means that bound is NA.
+        # Check for missing rows.  R: missing <- if (anyNA(x$min)) ...  When an
+        # axis is entirely absent, resolve_box() returns NULL and R's
+        # anyNA(NULL) is FALSE -> that axis is NOT flagged (no spurious
+        # warning).  So only flag a bound when its resolved value has NaN.
         missing: List[str] = []
-        if x is None or np.isnan(x["min"]).any():
+        if x is not None and np.isnan(x["min"]).any():
             missing.append("xmin")
-        if x is None or np.isnan(x["max"]).any():
+        if x is not None and np.isnan(x["max"]).any():
             missing.append("xmax")
-        if y is None or np.isnan(y["min"]).any():
+        if y is not None and np.isnan(y["min"]).any():
             missing.append("ymin")
-        if y is None or np.isnan(y["max"]).any():
+        if y is not None and np.isnan(y["max"]).any():
             missing.append("ymax")
 
         if missing:
@@ -300,17 +302,13 @@ class GeomBox(Geom):
                 msg = msg + "\n" + "\n".join("i " + t for t in tip)
             cli_warn(msg)
 
-        n = len(data)
-        if x is None:
-            data["xmin"] = np.full(n, np.nan)
-            data["xmax"] = np.full(n, np.nan)
-        else:
+        # R: data[c("xmin","xmax","ymin","ymax")] <- list(x$min, x$max, y$min,
+        # y$max).  When an axis is absent, x/y is NULL and the NULL list entries
+        # are skipped -> those corner columns are NOT created (no NaN columns).
+        if x is not None:
             data["xmin"] = x["min"]
             data["xmax"] = x["max"]
-        if y is None:
-            data["ymin"] = np.full(n, np.nan)
-            data["ymax"] = np.full(n, np.nan)
-        else:
+        if y is not None:
             data["ymin"] = y["min"]
             data["ymax"] = y["max"]
 

@@ -324,10 +324,16 @@ def test_split_helpers_split_max_and_match():
 
 
 def test_split_setup_default_top_left():
-    """R gold standard (strip_split() default, facet_wrap2(vars(cyl,drv))):
+    """R gold standard (strip_split() default, facet_wrap2(vars(cyl,drv))).
 
-    top (cyl): dedup PANELs [1,3,4,7], strp.b = [1,1,4,7], strp.r = [2,3,3,3];
-    left (drv): dedup PANELs [1,2,6], strp.b = [7,7,7], strp.r = [1,3,3].
+    Verified by end-to-end ggplotGrob render parity with R: top(cyl) = 4 strips,
+    left(drv) = 9 strips (one per panel).  The secondary strip uses R's
+    CUMULATIVE id ``id(vars[, 1:k])`` so it is NOT merged across the primary
+    variable.  (The earlier ``[1,2,6]`` left expectation encoded the pre-fix
+    single-column id and was never actually checked against R.)
+
+    top (cyl):  dedup PANELs [1,3,4,7], strp.b = [1,1,4,7], strp.r = [2,3,3,3];
+    left (drv): one per panel, strp.b = [1,1,1,4,4,4,7,7,7], strp.r = [1,2,3]x3.
     bottom / right unused -> None.
     """
     layout = _mpg_layout()
@@ -341,10 +347,10 @@ def test_split_setup_default_top_left():
     assert list(top["r"]) == [2, 3, 3, 3]
 
     left = s.strips["y"]["left"]
-    assert list(left["t"]) == [1, 2, 6]
-    assert list(left["b"]) == [7, 7, 7]
-    assert list(left["l"]) == [1, 2, 6]
-    assert list(left["r"]) == [1, 3, 3]
+    assert list(left["t"]) == [1, 2, 3, 4, 5, 6, 7, 8, 9]
+    assert list(left["b"]) == [1, 1, 1, 4, 4, 4, 7, 7, 7]
+    assert list(left["l"]) == [1, 2, 3, 4, 5, 6, 7, 8, 9]
+    assert list(left["r"]) == [1, 2, 3, 1, 2, 3, 1, 2, 3]
 
     assert s.strips["x"]["bottom"] is None
     assert s.strips["y"]["right"] is None
@@ -369,9 +375,10 @@ def test_split_incorporate_grid_runs():
     s.setup(layout, {"facets": ["cyl", "drv"], "labeller": None}, theme_grey(), "wrap")
     out = s.incorporate_grid(_panel_3x3(), False)
     names = [str(n) for n in out.layout["name"] if str(n).startswith("strip-")]
-    # 4 top (cyl) + 3 left (drv) deduped strips.
+    # R gold standard (cumulative id, ggplotGrob-verified): 4 top (cyl) +
+    # 9 left (drv, one per panel -- not merged across cyl).
     assert sum(n.startswith("strip-t-") for n in names) == 4
-    assert sum(n.startswith("strip-l-") for n in names) == 3
+    assert sum(n.startswith("strip-l-") for n in names) == 9
 
 
 def test_split_incorporate_wrap_delegates_to_grid():

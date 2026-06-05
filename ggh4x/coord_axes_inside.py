@@ -32,6 +32,7 @@ from __future__ import annotations
 
 from typing import Any, Dict, Optional, Sequence, Union
 
+import numpy as np
 import pandas as pd
 
 from ggplot2_py import ggproto_parent
@@ -364,7 +365,16 @@ def coord_axes_inside(
         default=default,
         clip=clip,
         ratio=ratio,
-        origin=pd.DataFrame({"x": [xintercept], "y": [yintercept]}),
+        # R: data_frame0(x = xintercept[1], y = yintercept[1]) takes the FIRST
+        # element of a (possibly vector) intercept; np.atleast_1d handles both a
+        # scalar and a vector uniformly (previously a vector was stored verbatim
+        # and crashed downstream in float(origin["x"])).
+        origin=pd.DataFrame(
+            {
+                "x": [np.atleast_1d(xintercept)[0]],
+                "y": [np.atleast_1d(yintercept)[0]],
+            }
+        ),
         outer_axes=outer_axes,
         inner_axes=inner_axes,
     )

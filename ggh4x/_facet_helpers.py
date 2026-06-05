@@ -214,14 +214,18 @@ def reshape_add_margins(
     df: pd.DataFrame,
     vars_: Sequence[Sequence[str]],
     margins: Any = False,
+    margin_nm: str = "(all)",
 ) -> pd.DataFrame:
     """Add facet margins to a cross-product layout frame.
 
-    Minimal faithful port of ggplot2's ``reshape_add_margins`` as borrowed by
-    ggh4x.  The default ``margins=FALSE`` (or empty) path is the identity, which
-    is the only path the validation cases exercise; when *margins* requests
-    marginal rows the unique combinations with ``"(all)"`` substituted for the
-    marginal variables are appended.
+    Faithful port of ggplot2's ``reshape_add_margins`` (as borrowed by ggh4x).
+    Enumerates EVERY marginal variable subset via ``reshape_margins``
+    (``expand.grid`` over ``{none} ∪ {downto(margin, set)}`` per facet
+    dimension), which includes the empty set (= the original data) AND the full
+    set (= the grand-total ``(all)/(all)`` panel) — the latter was previously
+    missing.  Each subset's columns are set to *margin_nm* and the frames are
+    row-bound.  Marginalised columns gain *margin_nm* as their LAST factor level
+    so margin panels sort last (R ``add_all``).
 
     Parameters
     ----------
@@ -244,24 +248,66 @@ def reshape_add_margins(
     if isinstance(margins, (list, tuple)) and len(margins) == 0:
         return df
 
-    all_vars: List[str] = []
-    for group in vars_:
-        all_vars.extend(list(group))
-    all_vars = [v for v in all_vars if v in df.columns]
-    if not all_vars:
+    from itertools import product
+
+    def _downto(a: str, b: Sequence[str]) -> List[str]:
+        # R: downto(a, b) = rev(upto(a, rev(b))) = elements of b from a to end
+        # (so marginalising an outer variable also marginalises nested ones).
+        b = list(b)
+        return b[b.index(a):] if a in b else []
+
+    # reshape_margins: every marginal variable subset (R borrowed_ggplot2.R).
+    if margins is True:
+        margins_list = [v for grp in vars_ for v in grp]
+    else:
+        margins_list = list(margins)
+    dims: List[List[List[str]]] = []
+    for set_vars in vars_:
+        sv = list(set_vars)
+        inter = [v for v in sv if v in margins_list]  # R intersect: set order
+        dims.append([_downto(m, sv) for m in inter])
+    margin_sets: List[List[str]] = []
+    for combo in product(*[range(len(d) + 1) for d in dims]):
+        sel: List[str] = []
+        for set_i, choice in enumerate(combo):
+            if choice > 0:  # choice 0 == "no margin on this dimension"
+                sel.extend(dims[set_i][choice - 1])
+        margin_sets.append(sel)  # includes [] (original) and the full set
+
+    affected: List[str] = []
+    for s in margin_sets:
+        for v in s:
+            if v not in affected and v in df.columns:
+                affected.append(v)
+    if not affected:
         return df
 
-    if margins is True:
-        margin_vars = all_vars
-    else:
-        margin_vars = [v for v in margins if v in df.columns]
-        if not margin_vars:
-            return df
+    df = df.copy()
 
-    extras: List[pd.DataFrame] = [df]
-    for v in margin_vars:
+    def _add_all(col: pd.Series) -> pd.Categorical:
+        # R add_all: factor with margin_nm appended as the LAST level.
+        if isinstance(col.dtype, pd.CategoricalDtype):
+            cats = list(col.cat.categories)
+        else:
+            cats = sorted(pd.unique(col.dropna()).tolist())
+        if margin_nm not in cats:
+            cats = cats + [margin_nm]
+        return pd.Categorical(col, categories=cats)
+
+    for v in affected:
+        df[v] = _add_all(df[v])
+
+    frames: List[pd.DataFrame] = []
+    for s in margin_sets:
         block = df.copy()
-        block[v] = "(all)"
-        extras.append(block)
-    out = pd.concat(extras, ignore_index=True).drop_duplicates().reset_index(drop=True)
+        for v in s:
+            if v in block.columns:
+                block[v] = pd.Categorical(
+                    [margin_nm] * len(block),
+                    categories=list(block[v].cat.categories),
+                )
+        frames.append(block)
+    out = pd.concat(frames, ignore_index=True).drop_duplicates().reset_index(
+        drop=True
+    )
     return out

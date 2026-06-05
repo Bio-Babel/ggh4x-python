@@ -32,16 +32,22 @@ def vec_interleave(*args: Sequence[Any]) -> np.ndarray:
     Parameters
     ----------
     *args : sequence
-        Equal-length (after recycling) vectors.
+        Vectors of length 1 or *n* (length-1 recycles; incompatible lengths
+        raise, matching R).
 
     Returns
     -------
     np.ndarray
         ``[a0, b0, ..., a1, b1, ...]`` order.
     """
-    arrays = [np.asarray(a) for a in args]
-    n = max(len(a) for a in arrays) if arrays else 0
-    arrays = [np.resize(a, n) if len(a) != n else a for a in arrays]
+    if not args:
+        return np.array([])
+    # R: vec_interleave recycles via vec_recycle_common — only length-1 vectors
+    # recycle; incompatible lengths ERROR (rather than silently cycling, which
+    # np.resize would do).
+    arrays = vec_recycle_common(*args)
+    if not arrays or len(arrays[0]) == 0:
+        return np.array([])
     return np.stack(arrays, axis=1).reshape(-1)
 
 
@@ -107,8 +113,19 @@ def vec_match(needles: Sequence[Any], haystack: Sequence[Any]) -> np.ndarray:
         0-based indices of the first match (or -1 when absent). NB: R returns 1-based or
         ``NA``; callers that need R indices add 1.
     """
-    hay = pd.Index(pd.Series(list(haystack)))
-    return hay.get_indexer(pd.Series(list(needles)))
+    # R vec_match: first match, and it tolerates a DUPLICATED haystack
+    # (pd.Index.get_indexer raises on a non-unique index).  NA matches NA;
+    # absent -> -1 (R returns NA; -1 is this port's documented sentinel).
+    first_pos: dict = {}
+    na_pos = -1
+    for i, v in enumerate(haystack):
+        if pd.isna(v):
+            if na_pos == -1:
+                na_pos = i
+        elif v not in first_pos:
+            first_pos[v] = i
+    out = [(na_pos if pd.isna(nd) else first_pos.get(nd, -1)) for nd in needles]
+    return np.array(out, dtype=int)
 
 
 def vec_unique(x: Sequence[Any]) -> np.ndarray:
