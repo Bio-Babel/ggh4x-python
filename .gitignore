@@ -30,4 +30,6 @@ site/
 .cache/
 .ipynb_checkpoints/
 validation/
-docs/tutorials/
+
+# Unrelated R export script (kept on disk, not tracked)
+scripts/

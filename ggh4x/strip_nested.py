@@ -384,10 +384,10 @@ def _unit_slice(u: Any, i: int) -> Any:
     grid_py.Unit
         The unit at *i* (or *u* itself when it is already scalar).
     """
-    try:
-        return u[i]
-    except Exception:
+    n = len(u)
+    if n <= 1:
         return u
+    return u[i % n]
 
 
 # R's ``StripNested`` ggproto instance used as the parent of every clone.

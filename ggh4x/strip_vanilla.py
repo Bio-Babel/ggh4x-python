@@ -277,7 +277,7 @@ def _draw_labels_impl(
         # margins). Re-name to mirror R grobName(grob, "strip.text.<aes>").
         try:
             grob.name = grob_name(grob, "strip.text." + aes)
-        except Exception:
+        except (AttributeError, TypeError):
             pass
         grobs.append(grob)
 
@@ -313,7 +313,7 @@ def _draw_labels_impl(
         tree = grob_tree(bg_grob, x)
         try:
             tree.name = grob_name(tree, "strip")
-        except Exception:
+        except (AttributeError, TypeError):
             pass
         combined.append(tree)
 
@@ -1344,7 +1344,7 @@ def resolve_strip(strip: Any, arg: str = "strip", env: Any = None) -> Strip:
                 import ggh4x as _pkg  # noqa: F401
 
                 fn = getattr(_pkg, "strip_" + strip, None)
-            except Exception:
+            except ImportError:
                 fn = None
         strip = fn
 

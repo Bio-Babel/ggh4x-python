@@ -13,7 +13,8 @@ Importing this package wires every subsystem's registration side-effects
 
 from __future__ import annotations
 
-__version__ = "0.3.1.9000+63c91b7"
+__version__ = "0.3.1.9000"
+__r_commit__ = "63c91b7"
 
 # --- Stats -------------------------------------------------------------------
 from .stat_theodensity import StatTheoDensity, stat_theodensity

@@ -599,40 +599,6 @@ class FacetNested(FacetGrid2):
 # ---------------------------------------------------------------------------
 # Nest-indicator helper (shared by FacetNested + FacetNestedWrap)
 # ---------------------------------------------------------------------------
-def _calc_nestline(theme: Any) -> Any:
-    """Resolve the ``ggh4x.facet.nestline`` theme element (R-faithful default).
-
-    R registers ``ggh4x.facet.nestline = element_blank()`` as the *default* via
-    ``register_theme_elements``, so in a complete theme ``calc_element`` returns
-    that blank unless the user set the element explicitly.  ``ggplot2_py``'s
-    :func:`register_theme_elements` only records the element-*tree* entry (the
-    blank default is dropped), so a complete theme that never had the element set
-    returns ``None`` for it and :func:`calc_element` then wrongly inherits a
-    visible line from the ``line`` ancestor.  Reinstate R's behaviour: when the
-    theme carries no explicit value, the parent is ``element_blank()`` (the
-    registered default); otherwise resolve normally via :func:`calc_element`.
-
-    Parameters
-    ----------
-    theme : Theme
-        The resolved plot theme.
-
-    Returns
-    -------
-    Element
-        The resolved ``ggh4x.facet.nestline`` element (blank by default).
-    """
-    raw = None
-    if theme is not None:
-        raw = theme.get("ggh4x.facet.nestline") if hasattr(theme, "get") else getattr(
-            theme, "ggh4x.facet.nestline", None
-        )
-    if raw is None:
-        # Registered default (R: register_theme_elements(... = element_blank())).
-        return element_blank()
-    return calc_element("ggh4x.facet.nestline", theme)
-
-
 def _layout_df(table: Any) -> pd.DataFrame:
     """Return a gtable layout (dict-of-lists) as a DataFrame with a 1-based index.
 
@@ -688,7 +654,7 @@ def add_nest_indicator(panels: Any, params: Dict[str, Any], theme: Any) -> Any:
     nest_line = params.get("nest_line")
     if nest_line is None or nest_line is False:
         return panels
-    nest_line = combine_elements(nest_line, _calc_nestline(theme))
+    nest_line = combine_elements(nest_line, calc_element("ggh4x.facet.nestline", theme))
     if is_theme_element(nest_line, "blank") or isinstance(nest_line, ElementBlank):
         return panels
     solo = bool(params.get("solo_line"))

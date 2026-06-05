@@ -263,7 +263,7 @@ def _gpar_to_dict(gp: Gpar) -> Dict[str, Any]:
     if hasattr(gp, "to_dict"):
         try:
             return {k: v for k, v in gp.to_dict().items() if v is not None}
-        except Exception:
+        except (AttributeError, TypeError):
             pass
     # Fallback: scrape known gpar slots.
     known = (

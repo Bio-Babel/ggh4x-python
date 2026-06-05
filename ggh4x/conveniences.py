@@ -31,7 +31,7 @@ from ._vctrs import vec_unrep
 
 try:  # pragma: no cover - import guard; ggplot2_py is always present in this env
     from ggplot2_py.theme_elements import element_rect, element_text
-except Exception:  # pragma: no cover
+except ImportError:  # pragma: no cover
     element_text = None  # type: ignore[assignment]
     element_rect = None  # type: ignore[assignment]
 

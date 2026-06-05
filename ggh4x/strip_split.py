@@ -604,10 +604,10 @@ def _unit_at(u: Any, i: int) -> Any:
     -------
     grid_py.Unit
     """
-    try:
-        return u[i]
-    except Exception:
+    n = len(u)
+    if n <= 1:
         return u
+    return u[i % n]
 
 
 # R's ``StripSplit`` ggproto instance used as the parent of every clone.

@@ -44,7 +44,7 @@ import numpy as np
 
 try:  # pragma: no cover - pandas is part of the runtime env
     import pandas as pd
-except Exception:  # pragma: no cover
+except ImportError:  # pragma: no cover
     pd = None  # type: ignore
 
 from ggplot2_py.scale import sec_axis, AxisSecondary

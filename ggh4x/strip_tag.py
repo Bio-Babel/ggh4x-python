@@ -111,7 +111,7 @@ def _draw_labels_tag(
         grob = element_grob(elem, label=label, margin_x=True, margin_y=True)
         try:
             grob.name = grob_name(grob, "strip.text." + aes)
-        except Exception:
+        except (AttributeError, TypeError):
             pass
         grobs.append(grob)
 
@@ -144,7 +144,7 @@ def _draw_labels_tag(
         tree = grob_tree(bg_grob, x)
         try:
             tree.name = grob_name(tree, "strip")
-        except Exception:
+        except (AttributeError, TypeError):
             pass
         combined.append(tree)
 
