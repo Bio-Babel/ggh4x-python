@@ -1,0 +1,11 @@
+# Treat this repository as a Python project.
+
+# Normalize line endings to LF on checkin.
+* text=auto eol=lf
+
+# Python sources get language-aware diffs.
+*.py  text diff=python
+*.pyi text diff=python
+
+# Keep GitHub's language bar Python-only (don't count notebooks).
+*.ipynb linguist-documentation

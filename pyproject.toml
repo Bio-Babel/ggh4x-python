@@ -4,10 +4,12 @@ build-backend = "hatchling.build"
 
 [project]
 name = "ggh4x-python"
-version = "0.3.1.9000+63c91b7"
+version = "0.3.1.9000"
 description = "Python port of the R ggh4x package"
+readme = "README.md"
 requires-python = ">=3.10"
 license = "MIT"
+authors = [{ name = "Jeffery Liu", email = "jeffliu.lucky@gmail.com" }]
 dependencies = [
     "numpy>=1.24",
     "pandas>=2.0",
@@ -23,14 +25,15 @@ dependencies = [
 dev = ["pytest", "pytest-cov", "ruff"]
 docs = ["mkdocs", "mkdocstrings[python]", "mkdocs-material", "mkdocs-jupyter"]
 
+[project.urls]
+Homepage = "https://github.com/Bio-Babel/ggh4x-python"
+Issues = "https://github.com/Bio-Babel/ggh4x-python/issues"
+
 [tool.hatch.build.targets.wheel]
 packages = ["ggh4x"]
 
-[tool.hatch.build.targets.wheel.force-include]
-"tutorials" = "ggh4x/tutorials"
-
 [tool.hatch.build.targets.sdist]
-include = ["ggh4x", "tutorials", "docs", "mkdocs.yml", "README.md", "LICENSE"]
+include = ["ggh4x", "README.md", "LICENSE"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
