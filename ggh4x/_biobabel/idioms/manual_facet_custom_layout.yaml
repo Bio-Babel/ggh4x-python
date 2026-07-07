@@ -1,0 +1,29 @@
+id: ggh4x.manual_facet_custom_layout
+name: "Manual facet with a custom design layout"
+description: >
+  facet_manual()'s design= places panels according to a design grid, where
+  a panel can span multiple design cells: a numeric/array matrix (using
+  NaN or repeated integers) or a character art-string (using '#' for blank
+  cells and other characters as panel-id labels). widths=/heights= mix
+  relative numerics and absolute grid_py.Unit values.
+code_template: |
+  import numpy as np
+  from ggplot2_py import ggplot, aes, geom_point, vars
+  from ggh4x import facet_manual
+
+  p = ggplot(mpg, aes("displ", "hwy")) + geom_point()
+
+  # Matrix design: panel 1 spans two cells in the first row.
+  p + facet_manual(vars("drv"), design=np.array([[1, 3], [2, 2]]))
+
+  # Character design: panel "A" spans two rows in the first column.
+  design = """
+  A##
+  AB#
+  #BC
+  ##C
+  """
+  p + facet_manual(vars("drv"), design=design, heights=[4, 3, 2, 1])
+applicable_to:
+  - ggh4x.facet_manual
+typical_use_case: "The desired panel arrangement cannot be expressed as a cross-product of facet variables, e.g. one panel spanning multiple grid cells."

@@ -29,6 +29,15 @@ docs = ["mkdocs", "mkdocstrings[python]", "mkdocs-material", "mkdocs-jupyter"]
 Homepage = "https://github.com/Bio-Babel/ggh4x-python"
 Issues = "https://github.com/Bio-Babel/ggh4x-python/issues"
 
+[project.entry-points."biobabel.manifest"]
+ggh4x = "ggh4x._biobabel:get_manifest"
+
+[project.entry-points."biobabel.detectors"]
+"ggh4x.force_panelsizes_before_facet" = "ggh4x._biobabel.detectors:force_panelsizes_before_facet"
+"ggh4x.text_aimed_nudge_position_conflict" = "ggh4x._biobabel.detectors:text_aimed_nudge_position_conflict"
+"ggh4x.margin_length_not_unit" = "ggh4x._biobabel.detectors:margin_length_not_unit"
+"ggh4x.theodensity_discrete_default_line" = "ggh4x._biobabel.detectors:theodensity_discrete_default_line"
+
 [tool.hatch.build.targets.wheel]
 packages = ["ggh4x"]
 
@@ -37,3 +46,6 @@ include = ["ggh4x", "README.md", "LICENSE"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+
+[tool.biobabel]
+contract_class = "grammar"

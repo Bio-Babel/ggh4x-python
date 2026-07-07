@@ -1,0 +1,27 @@
+id: ggh4x.elem_list_rect
+import_path: ggh4x.conveniences.elem_list_rect
+kind: function
+signature: "def elem_list_rect(**kwargs)"
+purpose: "Build a list of element_rect theme elements from vectorised arguments."
+description: >
+  Thin wrapper over `distribute_args(fun=element_rect, **kwargs)`: each
+  vectorised keyword (e.g. `fill=["limegreen", "dodgerblue"]`) produces one
+  `ElementRect` per position. Commonly used to build the per-strip
+  `background_x=`/`background_y=` element lists passed to `strip_themed()`
+  or `strip_nested()`.
+parameters:
+  - name: kwargs
+    type: Any
+    required: false
+    description: "Vectorised element_rect arguments (fill, colour, linewidth, linetype, ...), forwarded to distribute_args."
+mutates: "execution_class=pure_function; no in-place mutation; returns_kind=new_object"
+returns: "A list of ElementRect objects, or a single ElementRect when no arguments remain."
+requires: []
+writes: []
+examples:
+  - "elem_list_rect(fill=['limegreen', 'dodgerblue'])"
+failure_fixes: []
+related:
+  - ggh4x.distribute_args
+  - ggh4x.strip_themed
+  - ggh4x.strip_nested

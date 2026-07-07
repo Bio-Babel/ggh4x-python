@@ -1,0 +1,26 @@
+id: ggh4x.FacetNested
+import_path: ggh4x.facet_nested.FacetNested
+kind: class
+signature: ''
+purpose: "ggproto Facet backing facet_nested(); overrides map_data/vars_combine/finish_panels to support hierarchical, partially-faceted layers with nest lines."
+description: >
+  Not directly instantiated by users — built via `facet_nested()`'s
+  internal `new_grid_facets(...)` helper. Subclass of
+  `ggh4x.facet_grid2.FacetGrid2`. Overrides exactly three seams: `map_data`
+  (a faceting variable is treated as missing only when *no* variable in its
+  direction appears in that layer, enabling partial nesting), `vars_combine`
+  (blank-fills `""` for variables absent from a partial layer instead of
+  raising like vanilla `combine_vars`), and `finish_panels` (delegates to
+  the module-level `add_nest_indicator` to draw hierarchy lines gated by the
+  theme's `ggh4x.facet.nestline` element).
+parameters: []
+mutates: "execution_class=builder; map_data/vars_combine/finish_panels build new DataFrames/Gtables; returns_kind=new_object"
+returns: "N/A (class); finish_panels returns a Gtable decorated with nest-line grobs and adjusted z-order."
+requires: []
+writes: []
+examples: []
+failure_fixes: []
+related:
+  - ggh4x.facet_nested
+  - ggh4x.FacetGrid2
+  - ggh4x.FacetNestedWrap

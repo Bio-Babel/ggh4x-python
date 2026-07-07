@@ -1,0 +1,37 @@
+id: ggh4x.distribute_args
+import_path: ggh4x.conveniences.distribute_args
+kind: function
+signature: "def distribute_args(*, fun=None, cull=True, **kwargs)"
+purpose: "Call a builder function once per vectorised 'column' of keyword arguments."
+description: >
+  Distributes vectorised keyword arguments across repeated calls to `fun`
+  (default `ggplot2_py.theme_elements.element_text`): a list/tuple/1-D
+  array/Series argument supplies one value per call, a scalar occupies only
+  the first call, and `None`/NaN mark skipped positions. When `cull=True`
+  (default), keyword names not present in `fun`'s signature are dropped
+  before each call, mirroring R's `names(formals(.fun))` filtering.
+parameters:
+  - name: fun
+    type: Callable
+    required: false
+    default: "None"
+    description: "Function to receive the distributed arguments; defaults to element_text when None."
+  - name: cull
+    type: bool
+    required: false
+    default: "True"
+    description: "Drop kwargs whose names are not in fun's signature."
+  - name: kwargs
+    type: Any
+    required: false
+    description: "Vectorised arguments; list/tuple/array/Series give one value per call, scalars/None/NaN mark skip or single-call positions."
+mutates: "execution_class=pure_function; no in-place mutation; returns_kind=new_object"
+returns: "A list of fun(...) outputs, one per column, or a single fun() result when no usable arguments remain after culling."
+requires: []
+writes: []
+examples:
+  - "distribute_args(fun=element_text, colour=['red', 'blue'])"
+failure_fixes: []
+related:
+  - ggh4x.elem_list_text
+  - ggh4x.elem_list_rect

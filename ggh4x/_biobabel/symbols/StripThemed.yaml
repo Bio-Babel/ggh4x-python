@@ -1,0 +1,23 @@
+id: ggh4x.StripThemed
+import_path: ggh4x.strip_themed.StripThemed
+kind: class
+signature: "class StripThemed(Strip)"
+purpose: "ggproto Strip subclass letting per-strip/per-layer text and background elements be individually themed."
+description: >
+  `_class_name = "StripElemental"` (R's internal class string differs from
+  the Python/R object name). Not directly instantiated by users; built and
+  configured via `strip_themed()`. Overrides only `setup_elements(theme,
+  type)`, a pure function of `self.given_elements` returning a new dict with
+  keys `padding, background, text, inside, by_layer`; all other Strip
+  machinery (`setup`, `get_strips`, `incorporate_grid`/`incorporate_wrap`,
+  etc.) is inherited unchanged, with the same mutation semantics as `Strip`.
+parameters: []
+mutates: "execution_class=pure_function; setup_elements is pure, other inherited methods mutate self.elements/self.strips via ggproto's _set as in Strip; returns_kind=new_object"
+returns: "N/A (class); setup_elements returns a dict with keys padding, background, text, inside, by_layer."
+requires: []
+writes: []
+examples: []
+failure_fixes: []
+related:
+  - ggh4x.strip_themed
+  - ggh4x.Strip

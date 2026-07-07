@@ -1,0 +1,26 @@
+id: ggh4x.GuideStringlegend
+import_path: ggh4x.guide_stringlegend.GuideStringlegend
+kind: class
+signature: ''
+purpose: "ggproto Guide rendering legend keys as coloured text strings instead of geom-key swatches."
+description: >
+  Subclass of `ggplot2_py.guide.GuideLegend` (in turn `Guide`). Not directly
+  instantiated by users; built and configured via `guide_stringlegend()`,
+  which injects `available_aes`/`name` at build time. Overrides exactly
+  five points: `get_layer_key` (identity passthrough — a string legend has
+  no geom keys), `setup_params` (adds `sizes={"widths":0,"heights":0}`),
+  `setup_elements` (zeroes key width/height, rebuilds the text element),
+  `build_labels` (one coloured text grob per key row, colour from `colour`
+  falling back to `fill`), and `build_decor` (returns one `null_grob()` per
+  key row rather than R's single scalar `zeroGrob()` — a deliberate
+  behavioral divergence to satisfy the Python port's list-indexed grob
+  measurement).
+parameters: []
+mutates: "execution_class=pure_function; setup_elements copies its params dict before mutating the copy; returns_kind=new_object"
+returns: "N/A (class); build_labels returns a list of text grobs, one per key row."
+requires: []
+writes: []
+examples: []
+failure_fixes: []
+related:
+  - ggh4x.guide_stringlegend

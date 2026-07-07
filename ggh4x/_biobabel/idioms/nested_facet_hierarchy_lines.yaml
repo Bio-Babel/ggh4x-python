@@ -1,0 +1,24 @@
+id: ggh4x.nested_facet_hierarchy_lines
+name: "Nested facet with hierarchy nest lines"
+description: >
+  facet_nested() merges adjacent strips sharing an outer facet value into
+  one spanning strip; nest_line= draws a line at the nesting boundary, but
+  is only visible once the theme's ggh4x.facet.nestline element is set
+  (see the nest_line_theme_gating concept).
+code_template: |
+  from ggplot2_py import ggplot, aes, geom_point, vars, theme, element_blank, element_line
+
+  iris_plot = ggplot(iris, aes("Sepal.Width", "Sepal.Length")) + geom_point()
+
+  (
+      iris_plot
+      + facet_nested(cols=vars("Nester", "Species"), nest_line=element_line(linetype=2))
+      + theme(
+          strip_background=element_blank(),
+          **{"ggh4x.facet.nestline": element_line(colour="blue")},
+      )
+  )
+applicable_to:
+  - ggh4x.facet_nested
+  - ggh4x.nest_line_theme_gating
+typical_use_case: "Faceting on 2+ hierarchical grouping variables where the outer variable's grouping should read as a visually spanning label."

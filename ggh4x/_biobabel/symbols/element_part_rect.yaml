@@ -1,0 +1,57 @@
+id: ggh4x.element_part_rect
+import_path: ggh4x.element_part_rect.element_part_rect
+kind: function
+signature: "def element_part_rect(side='tlbr', fill=None, colour=None, linewidth=None, linetype=None, color=None, inherit_blank=False)"
+purpose: "Build a theme rect element that draws only the specified border sides."
+description: >
+  A drop-in substitute for `ggplot2_py.theme_elements.element_rect` used in
+  calls like `theme(strip_background=..., panel_background=...)`. `side` is
+  any combination of `"t"`, `"l"`, `"b"`, `"r"`; supplying all four
+  simplifies to a plain `element_rect`, and supplying none simplifies to
+  `element_rect(colour=NA, ...)`. `color` is an American-spelling alias for
+  `colour` and overrides it when both are given.
+parameters:
+  - name: side
+    type: str
+    required: false
+    default: "'tlbr'"
+    description: "Combination of 't','l','b','r' selecting which borders to draw."
+  - name: fill
+    type: str
+    required: false
+    default: "None"
+    description: "Fill colour."
+  - name: colour
+    type: str
+    required: false
+    default: "None"
+    description: "Border colour."
+  - name: linewidth
+    type: float
+    required: false
+    default: "None"
+    description: "Border width in mm."
+  - name: linetype
+    type: Union[int, str]
+    required: false
+    default: "None"
+    description: "Border line type (int 0-8, name, or hex dash string)."
+  - name: color
+    type: str
+    required: false
+    default: "None"
+    description: "American-spelling alias for colour; overrides colour when given."
+  - name: inherit_blank
+    type: bool
+    required: false
+    default: "False"
+    description: "Whether to inherit element_blank() from parent theme elements."
+mutates: "execution_class=pure_function; no in-place mutation; returns_kind=new_object"
+returns: "An ElementRect for the all-sides/no-sides special cases, otherwise an ElementPartRect."
+requires: []
+writes: []
+examples:
+  - "theme(strip_background=element_part_rect(side='b', colour='black'))"
+failure_fixes: []
+related:
+  - ggh4x.ElementPartRect

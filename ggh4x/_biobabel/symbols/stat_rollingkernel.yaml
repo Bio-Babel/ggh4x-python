@@ -1,0 +1,97 @@
+id: ggh4x.stat_rollingkernel
+import_path: ggh4x.stat_rollingkernel.stat_rollingkernel
+kind: function
+signature: "def stat_rollingkernel(mapping=None, data=None, geom='line', position='identity', *, bw='nrd', kernel='gaussian', n=256, expand=0.1, na_rm=False, orientation='x', show_legend=None, inherit_aes=True, **kwargs)"
+purpose: "Draw a model-free, kernel-weighted rolling-mean trendline over x/y data."
+description: >
+  Requires `x` and `y` aesthetics. Moves a kernel along `orientation`,
+  weights points by distance, and computes a weighted average of the other
+  axis's values, returning `n` evaluation points per group. `bw` may be a
+  numeric bandwidth, a `ggplot2_py.Rel` (relative to the group's data
+  range), or a bandwidth-rule name (e.g. `"nrd"`). `kernel` is one of
+  `"gaussian"`/`"norm"`, `"unif"`/`"mean"`, `"cauchy"`, or a custom callable
+  `f(distances, bw) -> weights`; `kernel="mean"` gives a blockier, uniform
+  rolling mean.
+parameters:
+  - name: mapping
+    type: Mapping
+    required: false
+    default: "None"
+    description: "aes() mapping; requires x and y."
+  - name: data
+    type: Any
+    required: false
+    default: "None"
+    description: "Layer data or callable."
+  - name: geom
+    type: str
+    required: false
+    default: "'line'"
+    description: "Geometry used to render the layer."
+  - name: position
+    type: str
+    required: false
+    default: "'identity'"
+    description: "Position adjustment."
+  - name: bw
+    type: Any
+    required: false
+    default: "'nrd'"
+    description: "Bandwidth: numeric, a Rel, or a bandwidth-rule name."
+  - name: kernel
+    type: Any
+    required: false
+    default: "'gaussian'"
+    description: "'gaussian'/'norm', 'unif'/'mean', 'cauchy', or a custom weighting callable."
+  - name: n
+    type: int
+    required: false
+    default: "256"
+    description: "Number of points returned per group."
+  - name: expand
+    type: float
+    required: false
+    default: "0.1"
+    description: "Fraction to expand the evaluation range beyond data extremes."
+  - name: na_rm
+    type: bool
+    required: false
+    default: "False"
+    description: "Remove missing values silently when True."
+  - name: orientation
+    type: str
+    required: false
+    default: "'x'"
+    description: "'x' or 'y'."
+  - name: show_legend
+    type: bool
+    required: false
+    default: "None"
+    description: "Whether to show the layer in the legend."
+  - name: inherit_aes
+    type: bool
+    required: false
+    default: "True"
+    description: "Whether to inherit plot aesthetics."
+  - name: kwargs
+    type: Any
+    required: false
+    description: "Other layer args."
+mutates: "execution_class=pure_function; no validation at construction time (kernel/bw validated later at render); returns_kind=new_object"
+returns: "A ggplot2_py Layer backed by StatRollingkernel."
+requires: []
+writes: []
+examples:
+  - "stat_rollingkernel()"
+  - "stat_rollingkernel(kernel='mean', bw=1)"
+failure_fixes:
+  - when: "kernel is a string not in the supported set."
+    suggest:
+      - "Use one of 'gaussian', 'norm', 'unif', 'mean', 'cauchy', or pass a callable f(distances, bw) -> weights."
+    explanation: "StatRollingkernel.setup_params raises via cli_abort('Unknown kernel specification: ...') at render time for unrecognized string kernels."
+  - when: "bw is a string not in the supported bandwidth-rule set."
+    suggest:
+      - "Use one of 'nrd0', 'nrd', 'ucv', 'bcv', 'sj', 'sj-ste', 'sj-dpi', or pass a numeric bandwidth."
+    explanation: "StatRollingkernel.compute_group raises via cli_abort('Unknown bandwidth rule: ...') at render time for unrecognized string bw rules."
+related:
+  - ggh4x.StatRollingkernel

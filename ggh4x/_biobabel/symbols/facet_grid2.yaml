@@ -1,0 +1,111 @@
+id: ggh4x.facet_grid2
+import_path: ggh4x.facet_grid2.facet_grid2
+kind: function
+signature: "def facet_grid2(rows=None, cols=None, scales='fixed', space='fixed', axes='margins', remove_labels='none', independent='none', shrink=True, labeller='label_value', as_table=True, switch=None, drop=True, margins=False, render_empty=True, strip='vanilla') -> FacetGrid2"
+purpose: "Extended facet_grid with independent per-row/column scales, inner-axis drawing/label removal, and pluggable strips."
+description: >
+  Distinguishing extras vs plain ggplot2_py facet_grid: `axes=` draws inner
+  axes ("margins"/"x"/"y"/"all"), `remove_labels=` drops inner-axis text
+  while keeping ticks, `independent=` lets scales vary *within* a row/column
+  (not just be free between row/col groups), and `render_empty=False`
+  blanks data-less row-by-column intersections instead of drawing them.
+  `strip=` accepts a Strip specification resolved via `resolve_strip()`
+  (default `"vanilla"`). `independent="x"`/`"y"`/`"all"` requires the
+  matching axis to also be free in `scales=`; specifying independent for
+  a non-free axis raises.
+parameters:
+  - name: rows
+    type: Any
+    required: false
+    default: "None"
+    description: "Faceting variable(s) for rows (formula/list/dict, same spec as facet_grid)."
+  - name: cols
+    type: Any
+    required: false
+    default: "None"
+    description: "Faceting variable(s) for columns."
+  - name: scales
+    type: Any
+    required: false
+    default: "'fixed'"
+    description: "'fixed'/'free_x'/'free_y'/'free' or bool; whether scales are shared or free."
+  - name: space
+    type: Any
+    required: false
+    default: "'fixed'"
+    description: "Same option set as scales; whether panel sizes are proportional to scale ranges."
+  - name: axes
+    type: Any
+    required: false
+    default: "'margins'"
+    description: "'margins'/'x'/'y'/'all' or bool; where inner axes are drawn."
+  - name: remove_labels
+    type: Any
+    required: false
+    default: "'none'"
+    description: "'none'/'x'/'y'/'all' or bool; whether inner-axis text is removed (ticks remain)."
+  - name: independent
+    type: Any
+    required: false
+    default: "'none'"
+    description: "'none'/'x'/'y'/'all' or bool; whether scales vary within a row/column; requires the matching axis to be free."
+  - name: shrink
+    type: bool
+    required: false
+    default: "True"
+    description: "Shrink scale to fit output of statistics, not raw data."
+  - name: labeller
+    type: Any
+    required: false
+    default: "'label_value'"
+    description: "Callable or str controlling strip label text."
+  - name: as_table
+    type: bool
+    required: false
+    default: "True"
+    description: "When False, reverses row factor level order."
+  - name: switch
+    type: str
+    required: false
+    default: "None"
+    description: "'x'/'y'/'both'/None; which strips switch sides."
+  - name: drop
+    type: bool
+    required: false
+    default: "True"
+    description: "Drop unused factor levels."
+  - name: margins
+    type: Any
+    required: false
+    default: "False"
+    description: "bool or list of str; add marginal summary panels."
+  - name: render_empty
+    type: bool
+    required: false
+    default: "True"
+    description: "Draw data-less panels (True) or blank them (False)."
+  - name: strip
+    type: Any
+    required: false
+    default: "'vanilla'"
+    description: "Strip / factory callable / str spec, resolved via resolve_strip; default is plain (unmerged) strips."
+mutates: "execution_class=pure_function; no in-place mutation; returns_kind=new_object"
+returns: "A FacetGrid2 ggproto instance, added to a ggplot via +."
+requires: []
+writes: []
+examples:
+  - "facet_grid2(vars('year'), vars('drv'), axes='all', remove_labels='y')"
+  - "facet_grid2(vars('year'), vars('drv'), scales='free_x', independent='x')"
+failure_fixes:
+  - when: "independent is set for an axis whose scales are not free."
+    suggest:
+      - "Set scales= to make the corresponding axis free (e.g. scales='free_x') before setting independent='x'."
+    explanation: "facet_grid2(independent={'x': True}, scales={'x': False}) raises ValueError via cli_abort('`x` cannot be independent if scales are not free.') (test_validate_independent_requires_free)."
+  - when: "The same variable is used in both rows and cols."
+    suggest:
+      - "Use disjoint sets of variables for rows and cols."
+    explanation: "facet_grid2('cyl', 'cyl') raises ValueError from compute_layout ('Duplicated variables...') (test_compute_layout_duplicate_var_aborts)."
+related:
+  - ggh4x.FacetGrid2
+  - ggh4x.resolve_strip
+  - ggh4x.facet_nested

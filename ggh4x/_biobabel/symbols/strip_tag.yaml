@@ -1,0 +1,76 @@
+id: ggh4x.strip_tag
+import_path: ggh4x.strip_tag.strip_tag
+kind: function
+signature: "def strip_tag(clip='inherit', order=('x', 'y'), just=(0, 1), text_x=None, text_y=None, background_x=None, background_y=None, by_layer_x=False, by_layer_y=False) -> StripTag"
+purpose: "Build a strip that renders facet labels as small fitted tag boxes (e.g. 'a)', 'b)') anchored inside each panel."
+description: >
+  Places labels inside the panel via a justified viewport instead of
+  full-width strip bars outside the panel. `order` controls the top-to-
+  bottom stacking order when both column (x) and row (y) tags are combined
+  in a grid facet (`("x","y")` or `("y","x")`). `just` is a 2-length
+  horizontal/vertical justification anchoring the fitted box (default
+  `(0,1)` = top-left corner). If `text_y` is left `None`, it is defaulted
+  internally to `element_text(angle=0)` (unlike `strip_themed`/
+  `strip_nested`/`strip_split`, which leave it truly `None`); pass an
+  explicit value to override. `clip="on"` clamps the fitted box to at most
+  1 npc, guarding against overflow for long labels.
+parameters:
+  - name: clip
+    type: str
+    required: false
+    default: "'inherit'"
+    description: "One of 'inherit', 'on' (clamps overflow), 'off'."
+  - name: order
+    type: Any
+    required: false
+    default: "('x', 'y')"
+    description: "Stacking order of x vs y tag text when both are combined; 'x','y' or 'y','x'."
+  - name: just
+    type: Any
+    required: false
+    default: "(0, 1)"
+    description: "2-length horizontal/vertical justification anchoring the fitted tag box."
+  - name: text_x
+    type: Any
+    required: false
+    default: "None"
+    description: "ElementText or list of ElementText for the x tags."
+  - name: text_y
+    type: Any
+    required: false
+    default: "element_text(angle=0)"
+    description: "ElementText or list of ElementText for the y tags; None is replaced with element_text(angle=0)."
+  - name: background_x
+    type: Any
+    required: false
+    default: "None"
+    description: "ElementRect or list of ElementRect for the x tag backgrounds."
+  - name: background_y
+    type: Any
+    required: false
+    default: "None"
+    description: "ElementRect or list of ElementRect for the y tag backgrounds."
+  - name: by_layer_x
+    type: bool
+    required: false
+    default: "False"
+    description: "Map the x element list to facet-variable layers instead of individual strips."
+  - name: by_layer_y
+    type: bool
+    required: false
+    default: "False"
+    description: "Map the y element list to facet-variable layers instead of individual strips."
+mutates: "execution_class=pure_function; no shared/global state mutation; params['size'] is hard-coded to 'constant' (no size parameter exposed); returns_kind=new_object"
+returns: "A StripTag ggproto instance."
+requires: []
+writes: []
+examples:
+  - "strip_tag(clip='on', order=('y', 'x'), just=(1, 0))"
+failure_fixes:
+  - when: "clip is passed a value outside {'inherit','on','off'}."
+    suggest:
+      - "Use one of 'inherit', 'on', 'off' for clip."
+    explanation: "strip_tag(clip=...) validates via arg_match0, the same mechanism verified failing for strip_nested(clip='bogus') (test_bad_clip_rejected)."
+related:
+  - ggh4x.StripTag
+  - ggh4x.StripNested

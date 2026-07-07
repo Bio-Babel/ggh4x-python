@@ -1,0 +1,85 @@
+id: ggh4x.geom_rectmargin
+import_path: ggh4x.geom_rectrug.geom_rectmargin
+kind: function
+signature: "def geom_rectmargin(mapping=None, data=None, stat='identity', position='identity', outside=False, sides='bl', length=None, linejoin='mitre', na_rm=False, show_legend=None, inherit_aes=True, **kwargs)"
+purpose: "Draw ranged rug-style rectangle annotations in the plot margins, parameterised by xmin/xmax and/or ymin/ymax."
+description: >
+  Optional aesthetics `x, y, xmin, xmax, ymin, ymax`; `required_aes = ()`.
+  `sides` is any combination of `"trbl"` selecting which margins get bands
+  (remapped under `CoordFlip`). `outside=True` moves the bands outside the
+  plot panel. `length` must be a `grid_py.Unit` object (or None, defaulting
+  internally to `Unit(0.03, "npc")`); passing a bare number raises.
+parameters:
+  - name: mapping
+    type: Mapping
+    required: false
+    default: "None"
+    description: "aes() mapping."
+  - name: data
+    type: Any
+    required: false
+    default: "None"
+    description: "Layer data or callable."
+  - name: stat
+    type: str
+    required: false
+    default: "'identity'"
+    description: "Stat used to transform the data."
+  - name: position
+    type: str
+    required: false
+    default: "'identity'"
+    description: "Position adjustment."
+  - name: outside
+    type: bool
+    required: false
+    default: "False"
+    description: "Move rectangles outside the plot area."
+  - name: sides
+    type: str
+    required: false
+    default: "'bl'"
+    description: "Any combination of 't','r','b','l' selecting which margins to draw bands on."
+  - name: length
+    type: Any
+    required: false
+    default: "None"
+    description: "A grid_py.Unit for band length; None defaults to Unit(0.03, 'npc')."
+  - name: linejoin
+    type: str
+    required: false
+    default: "'mitre'"
+    description: "Line join style."
+  - name: na_rm
+    type: bool
+    required: false
+    default: "False"
+    description: "Remove NA silently when True."
+  - name: show_legend
+    type: Any
+    required: false
+    default: "None"
+    description: "Whether to show the layer in the legend."
+  - name: inherit_aes
+    type: bool
+    required: false
+    default: "True"
+    description: "Whether to inherit plot aesthetics."
+  - name: kwargs
+    type: Any
+    required: false
+    description: "Extra aesthetics/params."
+mutates: "execution_class=pure_function; no in-place mutation; returns_kind=new_object"
+returns: "A ggplot2_py Layer backed by GeomRectMargin."
+requires: []
+writes: []
+examples:
+  - "geom_rectmargin(aes(xmin='xmin', xmax='xmax'), sides='tr', outside=True)"
+failure_fixes:
+  - when: "length is given but is not a grid_py.Unit object."
+    suggest:
+      - "Pass length as a grid_py Unit, e.g. Unit(0.03, 'npc'), not a bare number."
+    explanation: "GeomRectMargin.draw_panel raises TypeError via cli_abort('The `length` argument must be a `unit` object.') when length is a plain float (test_geomrectmargin_length_must_be_unit)."
+related:
+  - ggh4x.GeomRectMargin
+  - ggh4x.geom_tilemargin

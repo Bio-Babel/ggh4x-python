@@ -1,0 +1,95 @@
+id: ggh4x.geom_text_aimed
+import_path: ggh4x.geom_text_aimed.geom_text_aimed
+kind: function
+signature: "def geom_text_aimed(mapping=None, data=None, stat='identity', position='identity', parse=False, nudge_x=0, nudge_y=0, flip_upsidedown=True, check_overlap=False, na_rm=False, show_legend=None, inherit_aes=True, **kwargs)"
+purpose: "Like geom_text, but rotates each label to point ('aim') toward an (xend, yend) target."
+description: >
+  Requires `x`, `y`, `label`; consumes `xend`/`yend` (aim target, default
+  -Inf, real mappable aesthetics). The rotation angle is computed in
+  absolute device coordinates so it survives plot resizing.
+  `flip_upsidedown=True` (default) flips labels that would render upside
+  down (angle in (90,270)) for readability. `parse=True` is accepted but
+  not implemented (falls back to plain-string labels — a documented
+  deviation from R). `nudge_x`/`nudge_y` cannot be combined with a
+  non-`"identity"` `position`. Especially effective combined with
+  `coord_polar` so labels follow the wedges; near plot edges in Cartesian
+  coordinates it typically needs `coord_cartesian(clip="off")` to avoid
+  clipping.
+parameters:
+  - name: mapping
+    type: Mapping
+    required: false
+    default: "None"
+    description: "aes() mapping; requires x, y, label; optionally xend, yend."
+  - name: data
+    type: Any
+    required: false
+    default: "None"
+    description: "Layer data or callable."
+  - name: stat
+    type: str
+    required: false
+    default: "'identity'"
+    description: "Stat used to transform the data."
+  - name: position
+    type: str
+    required: false
+    default: "'identity'"
+    description: "Position adjustment; cannot be combined with nonzero nudge_x/nudge_y."
+  - name: parse
+    type: bool
+    required: false
+    default: "False"
+    description: "R plotmath parsing; accepted but not implemented, falls back to plain-string labels."
+  - name: nudge_x
+    type: float
+    required: false
+    default: "0"
+    description: "Horizontal nudge, translated into position_nudge when nonzero."
+  - name: nudge_y
+    type: float
+    required: false
+    default: "0"
+    description: "Vertical nudge, translated into position_nudge when nonzero."
+  - name: flip_upsidedown
+    type: bool
+    required: false
+    default: "True"
+    description: "Flip labels rotated into (90,270) degrees for readability."
+  - name: check_overlap
+    type: bool
+    required: false
+    default: "False"
+    description: "Skip drawing labels that would overlap already-drawn ones."
+  - name: na_rm
+    type: bool
+    required: false
+    default: "False"
+    description: "Remove NA silently when True."
+  - name: show_legend
+    type: Any
+    required: false
+    default: "None"
+    description: "Whether to show the layer in the legend."
+  - name: inherit_aes
+    type: bool
+    required: false
+    default: "True"
+    description: "Whether to inherit plot aesthetics."
+  - name: kwargs
+    type: Any
+    required: false
+    description: "Extra aesthetics/params."
+mutates: "execution_class=pure_function; raises before construction if nudge_x/nudge_y is nonzero together with a non-identity position; returns_kind=new_object"
+returns: "A ggplot2_py Layer backed by GeomTextAimed."
+requires: []
+writes: []
+examples:
+  - "geom_text_aimed(aes(label='car'), hjust=-0.2, size=3, xend=mpg_rng/2, yend=wt_rng/2)"
+failure_fixes:
+  - when: "nudge_x or nudge_y is nonzero and position is not 'identity'."
+    suggest:
+      - "Specify either position= or nudge_x/nudge_y, not both."
+    explanation: "geom_text_aimed(nudge_x=1, position='dodge') raises ValueError via cli_abort('Specify either `position` or `nudge_x`/`nudge_y`, not both.') (test_geomtextaimed_nudge_position_conflict)."
+related:
+  - ggh4x.GeomTextAimed

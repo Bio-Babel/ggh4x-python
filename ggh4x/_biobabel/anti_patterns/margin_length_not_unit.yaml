@@ -1,0 +1,16 @@
+id: ggh4x.margin_length_not_unit
+name: "geom_rectmargin()/geom_tilemargin() length= passed as a bare number"
+detection:
+  detector_id: ggh4x.margin_length_not_unit
+  static_only: true
+why_bad: >
+  The length= argument of geom_rectmargin()/geom_tilemargin() must be a
+  grid_py.Unit object (or omitted, defaulting to Unit(0.03, "npc")) because
+  the drawing code calls unit-specific methods on it; passing a bare
+  int/float raises a TypeError at draw time instead of silently being
+  interpreted as, say, npc units.
+correct_pattern: ggh4x.margin_rug_annotations
+code_example_wrong: |
+  geom_rectmargin(aes(xmin="xmin", xmax="xmax"), length=0.03)
+code_example_right: |
+  geom_rectmargin(aes(xmin="xmin", xmax="xmax"), length=Unit(0.03, "npc"))

@@ -1,0 +1,73 @@
+id: ggh4x.strip_themed
+import_path: ggh4x.strip_themed.strip_themed
+kind: function
+signature: "def strip_themed(clip='inherit', size='constant', text_x=None, text_y=None, background_x=None, background_y=None, by_layer_x=False, by_layer_y=False) -> StripThemed"
+purpose: "Build a strip whose per-strip (or per-layer) text and background boxes can be individually themed."
+description: >
+  `text_x`/`text_y`/`background_x`/`background_y` accept a single element
+  or a list of `ElementText`/`ElementRect` (built conveniently via
+  `elem_list_text()`/`elem_list_rect()`); `None` items in a list fall back
+  to the theme default. `by_layer_x=True`/`by_layer_y=True` maps the given
+  element list to facet-variable *layers* instead of individual strips
+  (with cyclic recycling when `False`, the default). Passed as the `strip=`
+  argument of `facet_grid2()`/`facet_wrap2()`.
+parameters:
+  - name: clip
+    type: str
+    required: false
+    default: "'inherit'"
+    description: "One of 'inherit', 'on', 'off'."
+  - name: size
+    type: str
+    required: false
+    default: "'constant'"
+    description: "One of 'constant', 'variable'."
+  - name: text_x
+    type: Any
+    required: false
+    default: "None"
+    description: "ElementText or list of ElementText for the top/bottom (x) strips."
+  - name: text_y
+    type: Any
+    required: false
+    default: "None"
+    description: "ElementText or list of ElementText for the left/right (y) strips."
+  - name: background_x
+    type: Any
+    required: false
+    default: "None"
+    description: "ElementRect or list of ElementRect for the top/bottom (x) strip backgrounds."
+  - name: background_y
+    type: Any
+    required: false
+    default: "None"
+    description: "ElementRect or list of ElementRect for the left/right (y) strip backgrounds."
+  - name: by_layer_x
+    type: bool
+    required: false
+    default: "False"
+    description: "Map the x element list to facet-variable layers instead of individual strips."
+  - name: by_layer_y
+    type: bool
+    required: false
+    default: "False"
+    description: "Map the y element list to facet-variable layers instead of individual strips."
+mutates: "execution_class=pure_function; no shared/global state mutation; returns_kind=new_object"
+returns: "A StripThemed ggproto instance."
+requires: []
+writes: []
+examples:
+  - "strip_themed(background_x=elem_list_rect(fill=['limegreen', 'dodgerblue']), text_x=elem_list_text(colour=['dodgerblue', 'limegreen']), by_layer_x=True)"
+failure_fixes:
+  - when: "clip is passed a value outside {'inherit','on','off'}."
+    suggest:
+      - "Use one of 'inherit', 'on', 'off' for clip."
+    explanation: "strip_themed(clip=...) validates via arg_match0, the same mechanism verified failing for strip_nested(clip='bogus') (test_bad_clip_rejected)."
+  - when: "text_x/text_y/background_x/background_y is given an element of the wrong prototype (e.g. an element_rect where element_text is expected)."
+    suggest:
+      - "Pass ElementText objects (or elem_list_text()) for text_x/text_y, and ElementRect objects (or elem_list_rect()) for background_x/background_y."
+    explanation: "validate_element_list raises ValueError when an element doesn't match the expected prototype (tests/test_strip_base.py::test_validate_element_list_invalid)."
+related:
+  - ggh4x.StripThemed
+  - ggh4x.elem_list_text
+  - ggh4x.elem_list_rect

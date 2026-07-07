@@ -1,0 +1,116 @@
+id: ggh4x.facet_nested_wrap
+import_path: ggh4x.facet_nested_wrap.facet_nested_wrap
+kind: function
+signature: "def facet_nested_wrap(facets, nrow=None, ncol=None, scales='fixed', axes='margins', remove_labels='none', shrink=True, labeller='label_value', as_table=True, drop=True, dir='h', strip_position='top', nest_line=None, solo_line=False, resect=None, trim_blank=True, strip=strip_nested, bleed=None) -> FacetNestedWrap"
+purpose: "facet_wrap2 plus merged same-label strips (within a wrap row/column) and hierarchy nest_lines."
+description: >
+  Same nesting/nest_line/bleed semantics as `facet_nested`, but for wrap
+  (ribbon) layout instead of grid layout — merging only occurs within the
+  same wrap row/column, unlike `facet_nested`'s grid-wide merge. Default
+  `strip=strip_nested`.
+parameters:
+  - name: facets
+    type: Any
+    required: true
+    description: "Faceting variable(s) (formula/list/dict)."
+  - name: nrow
+    type: int
+    required: false
+    default: "None"
+    description: "Number of rows."
+  - name: ncol
+    type: int
+    required: false
+    default: "None"
+    description: "Number of columns."
+  - name: scales
+    type: Any
+    required: false
+    default: "'fixed'"
+    description: "'fixed'/'free_x'/'free_y'/'free' or bool."
+  - name: axes
+    type: Any
+    required: false
+    default: "'margins'"
+    description: "'margins'/'x'/'y'/'all' or bool."
+  - name: remove_labels
+    type: Any
+    required: false
+    default: "'none'"
+    description: "'none'/'x'/'y'/'all' or bool."
+  - name: shrink
+    type: bool
+    required: false
+    default: "True"
+    description: "Shrink scale to fit output of statistics, not raw data."
+  - name: labeller
+    type: Any
+    required: false
+    default: "'label_value'"
+    description: "Callable or str controlling strip label text."
+  - name: as_table
+    type: bool
+    required: false
+    default: "True"
+    description: "When False, reverses factor level order."
+  - name: drop
+    type: bool
+    required: false
+    default: "True"
+    description: "Drop unused factor levels."
+  - name: dir
+    type: str
+    required: false
+    default: "'h'"
+    description: "'h' or 'v'; panel fill direction."
+  - name: strip_position
+    type: str
+    required: false
+    default: "'top'"
+    description: "'top'/'bottom'/'left'/'right'."
+  - name: nest_line
+    type: Any
+    required: false
+    default: "None"
+    description: "See facet_nested; ElementLine/ElementBlank/bool/None."
+  - name: solo_line
+    type: bool
+    required: false
+    default: "False"
+    description: "Draw nest lines on single-child parent strips too."
+  - name: resect
+    type: Any
+    required: false
+    default: "None"
+    description: "Unit or None; nest line end-shortening."
+  - name: trim_blank
+    type: bool
+    required: false
+    default: "True"
+    description: "When False, nrow/ncol are taken literally."
+  - name: strip
+    type: Any
+    required: false
+    default: "strip_nested"
+    description: "Strip / factory callable / str spec, resolved via resolve_strip; defaults to StripNested."
+  - name: bleed
+    type: bool
+    required: false
+    default: "None"
+    description: "Deprecated: forwards into strip.params['bleed'] with a DeprecationWarning; use strip_nested(bleed=...) instead."
+mutates: "execution_class=pure_function; no in-place mutation; emits DeprecationWarning when bleed is given; returns_kind=new_object"
+returns: "A FacetNestedWrap ggproto instance, added to a ggplot via +."
+requires: []
+writes: []
+examples:
+  - "facet_nested_wrap(vars('cyl', 'drv'), dir='v', strip_position='left', axes='all', remove_labels='x') + theme(strip_placement='outside')"
+failure_fixes:
+  - when: "bleed is passed directly instead of via strip_nested(bleed=...)."
+    suggest:
+      - "Pass strip=strip_nested(bleed=True) instead of the deprecated bleed= argument."
+    explanation: "facet_nested_wrap(bleed=True) raises a DeprecationWarning and sets strip.params['bleed'] (test_wrap_bleed_deprecation)."
+related:
+  - ggh4x.FacetNestedWrap
+  - ggh4x.strip_nested
+  - ggh4x.facet_wrap2
+  - ggh4x.facet_nested

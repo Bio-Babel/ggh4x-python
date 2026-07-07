@@ -1,0 +1,60 @@
+id: ggh4x.geom_outline_point
+import_path: ggh4x.geom_outline_point.geom_outline_point
+kind: function
+signature: "def geom_outline_point(mapping=None, data=None, stat='identity', position='identity', *, na_rm=False, show_legend=None, inherit_aes=True, **kwargs)"
+purpose: "Variant of geom_point where overlapping points share one visible outline."
+description: >
+  Draws a thicker background stroke layer (using the `stroke_colour`
+  aesthetic) beneath the normal foreground points, so overlapping points
+  appear to share a single outline instead of each showing its own. Expects
+  the usual point aesthetics (`x`, `y`, `shape`, `size`, `stroke`, `colour`,
+  `fill`) plus the extra `stroke_colour` aesthetic.
+parameters:
+  - name: mapping
+    type: Mapping
+    required: false
+    default: "None"
+    description: "aes() mapping."
+  - name: data
+    type: Any
+    required: false
+    default: "None"
+    description: "Layer data or callable."
+  - name: stat
+    type: Any
+    required: false
+    default: "'identity'"
+    description: "Stat used to transform the data."
+  - name: position
+    type: Any
+    required: false
+    default: "'identity'"
+    description: "Position adjustment."
+  - name: na_rm
+    type: bool
+    required: false
+    default: "False"
+    description: "Remove NA silently when True."
+  - name: show_legend
+    type: bool
+    required: false
+    default: "None"
+    description: "Whether to show the layer in the legend."
+  - name: inherit_aes
+    type: bool
+    required: false
+    default: "True"
+    description: "Whether to inherit plot aesthetics."
+  - name: kwargs
+    type: Any
+    required: false
+    description: "Fixed aesthetics/other layer args, e.g. size, stroke."
+mutates: "execution_class=pure_function; no in-place mutation; returns_kind=new_object"
+returns: "A ggplot2_py Layer backed by GeomOutlinePoint."
+requires: []
+writes: []
+examples:
+  - "geom_outline_point(aes(stroke_colour='group'))"
+failure_fixes: []
+related:
+  - ggh4x.GeomOutlinePoint

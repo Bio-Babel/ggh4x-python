@@ -1,0 +1,27 @@
+id: ggh4x.FacetWrap2
+import_path: ggh4x.facet_wrap2.FacetWrap2
+kind: class
+signature: ''
+purpose: "ggproto Facet backing facet_wrap2(); decomposes draw_panels, with axis re-placement logic for dangling panels."
+description: >
+  Not directly instantiated by users — built via `facet_wrap2()`'s internal
+  `new_wrap_facets(...)` helper. Subclass of `ggplot2_py.facet.FacetWrap`.
+  Its `setup_axes` is substantially larger than `FacetGrid2`'s because it
+  must mask interior axes, measure them post-deletion, then re-place
+  marginal axes bordering empty cells so a dangling panel (e.g. a 7th panel
+  in a 3x3 grid) keeps its bottom axis.
+parameters: []
+mutates: "execution_class=builder; internal drawing methods build new Gtables rather than mutating the plot; returns_kind=new_object"
+returns: "N/A (class); draw_panels returns a Gtable."
+requires: []
+writes: []
+examples: []
+failure_fixes:
+  - when: "free['x'] or free['y'] is True but the coord does not support free scales."
+    suggest:
+      - "Use a coord that supports free scales when requesting free/free_x/free_y scales."
+    explanation: "FacetWrap2.draw_panels raises via cli_abort when free scales are requested but coord.is_free() is False."
+related:
+  - ggh4x.facet_wrap2
+  - ggh4x.FacetNestedWrap
+  - ggh4x.FacetManual

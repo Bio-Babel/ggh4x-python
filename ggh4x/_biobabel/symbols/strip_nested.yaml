@@ -1,0 +1,73 @@
+id: ggh4x.strip_nested
+import_path: ggh4x.strip_nested.strip_nested
+kind: function
+signature: "def strip_nested(clip='inherit', size='constant', bleed=False, text_x=None, text_y=None, background_x=None, background_y=None, by_layer_x=False, by_layer_y=False) -> StripNested"
+purpose: "Build a strip that merges adjacent panels sharing the same outer facet label into one spanning strip cell."
+description: >
+  This is the mechanism behind `facet_nested()`/`facet_nested_wrap()`'s
+  hierarchical strip labels (and is in fact their default `strip=`).
+  `bleed=False` (default) blocks a lower (inner) layer's run from merging
+  across a higher (outer) layer's label boundary; `bleed=True` allows such
+  cross-boundary merges. Also accepts the per-strip theming parameters
+  inherited from `strip_themed()`.
+parameters:
+  - name: clip
+    type: str
+    required: false
+    default: "'inherit'"
+    description: "One of 'inherit', 'on', 'off'."
+  - name: size
+    type: str
+    required: false
+    default: "'constant'"
+    description: "One of 'constant', 'variable'."
+  - name: bleed
+    type: bool
+    required: false
+    default: "False"
+    description: "Allow a lower-layer strip run to merge across a higher-layer label boundary."
+  - name: text_x
+    type: Any
+    required: false
+    default: "None"
+    description: "ElementText or list of ElementText for the x strips."
+  - name: text_y
+    type: Any
+    required: false
+    default: "None"
+    description: "ElementText or list of ElementText for the y strips."
+  - name: background_x
+    type: Any
+    required: false
+    default: "None"
+    description: "ElementRect or list of ElementRect for the x strip backgrounds."
+  - name: background_y
+    type: Any
+    required: false
+    default: "None"
+    description: "ElementRect or list of ElementRect for the y strip backgrounds."
+  - name: by_layer_x
+    type: bool
+    required: false
+    default: "False"
+    description: "Map the x element list to facet-variable layers instead of individual strips."
+  - name: by_layer_y
+    type: bool
+    required: false
+    default: "False"
+    description: "Map the y element list to facet-variable layers instead of individual strips."
+mutates: "execution_class=pure_function; no shared/global state mutation; returns_kind=new_object"
+returns: "A StripNested ggproto instance."
+requires: []
+writes: []
+examples:
+  - "facet_wrap2(vars('cyl', 'drv'), ncol=4, strip=strip_nested(bleed=True))"
+failure_fixes:
+  - when: "clip is passed a value outside {'inherit','on','off'}."
+    suggest:
+      - "Use one of 'inherit', 'on', 'off' for clip."
+    explanation: "strip_nested(clip='bogus') raises ValueError via arg_match0 (test_bad_clip_rejected)."
+related:
+  - ggh4x.StripNested
+  - ggh4x.facet_nested
+  - ggh4x.facet_nested_wrap

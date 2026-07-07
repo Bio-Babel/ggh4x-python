@@ -1,0 +1,52 @@
+id: ggh4x.scale_color_multi
+import_path: ggh4x.multiscale.scale_color_multi
+kind: function
+signature: "def scale_color_multi(*, colours=MISSING, values=None, na_value='transparent', guide='colourbar', aesthetics='colour', colors=MISSING, **kwargs) -> MultiScale"
+purpose: "American-spelling alias for scale_colour_multi."
+description: >
+  A pure passthrough wrapper: forwards every argument verbatim to
+  `scale_colour_multi(...)` and returns its result unchanged.
+parameters:
+  - name: colours
+    type: Any
+    required: false
+    default: "['white', 'black']"
+    description: "Forwarded to scale_colour_multi."
+  - name: values
+    type: Any
+    required: false
+    default: "None"
+    description: "Forwarded to scale_colour_multi."
+  - name: na_value
+    type: str
+    required: false
+    default: "'transparent'"
+    description: "Forwarded to scale_colour_multi."
+  - name: guide
+    type: Any
+    required: false
+    default: "'colourbar'"
+    description: "Forwarded to scale_colour_multi."
+  - name: aesthetics
+    type: Any
+    required: false
+    default: "'colour'"
+    description: "Forwarded to scale_colour_multi."
+  - name: colors
+    type: Any
+    required: false
+    default: "None"
+    description: "Forwarded to scale_colour_multi."
+  - name: kwargs
+    type: Any
+    required: false
+    description: "Forwarded to scale_colour_multi."
+mutates: "execution_class=pure_function; delegates entirely to scale_colour_multi; returns_kind=new_object"
+returns: "Whatever scale_colour_multi(...) returns — a MultiScale with replaced_aes='colour'."
+requires: []
+writes: []
+examples:
+  - "scale_color_multi(aesthetics=['colour1'])"
+failure_fixes: []
+related:
+  - ggh4x.scale_colour_multi

@@ -1,0 +1,22 @@
+id: ggh4x.GeomPolygonRaster
+import_path: ggh4x.geom_polygonraster.GeomPolygonRaster
+kind: class
+signature: "class GeomPolygonRaster(GeomRaster)"
+purpose: "ggproto Geom drawing raster pixels as one combined multi-id polygon so they can be coord/position transformed."
+description: >
+  Not directly instantiated by users; built and configured via
+  `geom_polygonraster()`. `setup_data` replicates each pixel row 4x with
+  its four corner coordinates (an `id` column groups the 4 vertices per
+  pixel). `draw_panel` draws all pixels as a single `polygon_grob` call
+  with an `id` vector, completely overriding `GeomRaster`'s native raster
+  drawing, and forces an invisible border. Returns a `null_grob()` when
+  given a single-row/vertex input (cannot form a polygon).
+parameters: []
+mutates: "execution_class=pure_function; setup_data/draw_panel copy data before mutating the copy; returns_kind=new_object"
+returns: "N/A (class); setup_data returns a 4-rows-per-pixel DataFrame; draw_panel returns a single combined polygon grob."
+requires: []
+writes: []
+examples: []
+failure_fixes: []
+related:
+  - ggh4x.geom_polygonraster

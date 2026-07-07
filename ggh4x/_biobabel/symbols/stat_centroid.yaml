@@ -1,0 +1,82 @@
+id: ggh4x.stat_centroid
+import_path: ggh4x.stat_funxy.stat_centroid
+kind: function
+signature: "def stat_centroid(mapping=None, data=None, geom='point', position='identity', *, funx=_mean, funy=_mean, argx=None, argy=None, crop_other=True, show_legend=None, inherit_aes=True, **kwargs)"
+purpose: "Compute and draw the (NaN-aware) group centroid: mean x and mean y."
+description: >
+  Convenience wrapper around `stat_funxy()` with `funx`/`funy` defaulted to
+  a NaN-aware mean helper; `argx`/`argy` default to `{"na_rm": True}` when
+  not supplied (unlike bare `stat_funxy`, which defaults them to `{}`).
+  Commonly layered alongside `stat_midpoint()` to compare centroid vs
+  range-midpoint group labels on the same plot.
+parameters:
+  - name: mapping
+    type: Mapping
+    required: false
+    default: "None"
+    description: "aes() mapping; requires x and y."
+  - name: data
+    type: Any
+    required: false
+    default: "None"
+    description: "Layer data or callable."
+  - name: geom
+    type: str
+    required: false
+    default: "'point'"
+    description: "Geometry used to render the layer."
+  - name: position
+    type: str
+    required: false
+    default: "'identity'"
+    description: "Position adjustment."
+  - name: funx
+    type: Callable
+    required: false
+    default: "NaN-aware mean"
+    description: "Function computing the summary x value per group."
+  - name: funy
+    type: Callable
+    required: false
+    default: "NaN-aware mean"
+    description: "Function computing the summary y value per group."
+  - name: argx
+    type: dict
+    required: false
+    default: "{'na_rm': True}"
+    description: "Named kwargs forwarded to funx."
+  - name: argy
+    type: dict
+    required: false
+    default: "{'na_rm': True}"
+    description: "Named kwargs forwarded to funy."
+  - name: crop_other
+    type: bool
+    required: false
+    default: "True"
+    description: "Crop other columns to the result length before recycling."
+  - name: show_legend
+    type: bool
+    required: false
+    default: "None"
+    description: "Whether to show the layer in the legend."
+  - name: inherit_aes
+    type: bool
+    required: false
+    default: "True"
+    description: "Whether to inherit plot aesthetics."
+  - name: kwargs
+    type: Any
+    required: false
+    description: "Other layer args."
+mutates: "execution_class=pure_function; delegates entirely to stat_funxy; returns_kind=new_object"
+returns: "A ggplot2_py Layer backed by StatFunxy with funx=funy=mean."
+requires: []
+writes: []
+examples:
+  - "stat_centroid(geom='point', color='dodgerblue', size=4)"
+failure_fixes: []
+related:
+  - ggh4x.stat_funxy
+  - ggh4x.StatFunxy
+  - ggh4x.stat_midpoint

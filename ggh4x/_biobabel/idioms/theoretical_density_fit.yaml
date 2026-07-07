@@ -1,0 +1,17 @@
+id: ggh4x.theoretical_density_fit
+name: "Fitting a theoretical distribution to continuous data"
+description: >
+  stat_theodensity(distri=...) fits a named continuous distribution by MLE
+  and draws its density curve. Multiple stat_theodensity() layers with
+  different distri= can be stacked on one plot to compare candidate fits.
+code_template: |
+  from ggplot2_py import ggplot, aes
+  from ggh4x import stat_theodensity
+
+  ggplot(faithful, aes(x="eruptions", color="group")) + stat_theodensity(distri="gamma")
+
+  # Comparing two candidate fits to the same data.
+  ggplot(cdf, aes(x="x")) + stat_theodensity(distri="norm", color="blue") + stat_theodensity(distri="cauchy", color="red")
+applicable_to:
+  - ggh4x.stat_theodensity
+typical_use_case: "A histogram or density plot should be overlaid with a fitted theoretical distribution curve, possibly comparing more than one candidate distribution family."

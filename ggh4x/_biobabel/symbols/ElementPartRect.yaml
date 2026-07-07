@@ -1,0 +1,55 @@
+id: ggh4x.ElementPartRect
+import_path: ggh4x.element_part_rect.ElementPartRect
+kind: class
+signature: "def __init__(self, fill=None, colour=None, linewidth=None, linetype=None, inherit_blank=False, side='tlbr')"
+purpose: "Theme element that draws only specified sides of a rectangle border."
+description: >
+  Subclasses `ggplot2_py.theme_elements.ElementRect` so existing theme
+  inheritance (`combine_elements`/`merge_element`) treats it like a rect for
+  `strip_background`/`panel_background`. The `side` attribute (any
+  combination of `"t"`,`"l"`,`"b"`,`"r"`) selects which borders render.
+  Because upstream `ggplot2_py.theme_elements.element_grob` dispatches by a
+  hard `isinstance` chain (not S3-style dispatch), importing this module
+  also monkeypatches `ggplot2_py.theme_elements.element_grob` at import time
+  so `ElementPartRect` instances are not mis-rendered as full rectangles by
+  the upstream renderer; the patch is idempotent across re-imports.
+parameters:
+  - name: fill
+    type: str
+    required: false
+    default: "None"
+    description: "Fill colour."
+  - name: colour
+    type: str
+    required: false
+    default: "None"
+    description: "Border colour."
+  - name: linewidth
+    type: float
+    required: false
+    default: "None"
+    description: "Border width in mm."
+  - name: linetype
+    type: Union[int, str]
+    required: false
+    default: "None"
+    description: "Border line type."
+  - name: inherit_blank
+    type: bool
+    required: false
+    default: "False"
+    description: "Whether to inherit element_blank() from parent theme elements."
+  - name: side
+    type: str
+    required: false
+    default: "'tlbr'"
+    description: "Combination of 't','l','b','r' selecting which borders to draw."
+mutates: "execution_class=constructor; __init__ sets only the new instance's own attributes; returns_kind=new_object"
+returns: "N/A (constructor); instances are used as theme() values."
+requires: []
+writes: []
+examples:
+  - "ElementPartRect(side='b', colour='black')"
+failure_fixes: []
+related:
+  - ggh4x.element_part_rect

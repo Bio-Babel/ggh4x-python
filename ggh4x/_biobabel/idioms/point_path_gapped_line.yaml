@@ -1,0 +1,13 @@
+id: ggh4x.point_path_gapped_line
+name: "Point-and-path (type='b'-style) line chart"
+description: >
+  geom_pointpath() draws points connected by a gapped line in data order;
+  mult=/size=/linesize= tune the gap radius and line thickness.
+code_template: |
+  from ggplot2_py import ggplot, aes
+  from ggh4x import geom_pointpath
+
+  ggplot(pressure, aes("temperature", "pressure")) + geom_pointpath(linesize=2, size=2, mult=1)
+applicable_to:
+  - ggh4x.geom_pointpath
+typical_use_case: "A line chart should also mark each observed data point, with a visible gap separating the point marker from the connecting line."

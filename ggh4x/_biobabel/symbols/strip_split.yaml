@@ -1,0 +1,82 @@
+id: ggh4x.strip_split
+import_path: ggh4x.strip_split.strip_split
+kind: function
+signature: "def strip_split(position=('top', 'left'), clip='inherit', size='constant', bleed=False, text_x=None, text_y=None, background_x=None, background_y=None, by_layer_x=False, by_layer_y=False) -> StripSplit"
+purpose: "Build a strip that places each faceting variable's labels on a specific side of the panel."
+description: >
+  `position` assigns each faceting variable, in order, to one of
+  `"top"`/`"bottom"`/`"left"`/`"right"` (each entry validated; a bare string
+  is auto-wrapped into a single-element list). If `len(position)` does not
+  match the number of faceting variables, it is cyclically recycled with a
+  `UserWarning` — supply one position per faceting variable to avoid the
+  warning. Also accepts the per-strip theming parameters inherited from
+  `strip_themed()`/`strip_nested()`.
+parameters:
+  - name: position
+    type: Any
+    required: false
+    default: "('top', 'left')"
+    description: "Sequence of 'top'/'bottom'/'left'/'right', one per faceting variable (recycled with a warning if mismatched)."
+  - name: clip
+    type: str
+    required: false
+    default: "'inherit'"
+    description: "One of 'inherit', 'on', 'off'."
+  - name: size
+    type: str
+    required: false
+    default: "'constant'"
+    description: "One of 'constant', 'variable'."
+  - name: bleed
+    type: bool
+    required: false
+    default: "False"
+    description: "Same semantics as strip_nested's bleed."
+  - name: text_x
+    type: Any
+    required: false
+    default: "None"
+    description: "ElementText or list of ElementText for the x strips."
+  - name: text_y
+    type: Any
+    required: false
+    default: "None"
+    description: "ElementText or list of ElementText for the y strips."
+  - name: background_x
+    type: Any
+    required: false
+    default: "None"
+    description: "ElementRect or list of ElementRect for the x strip backgrounds."
+  - name: background_y
+    type: Any
+    required: false
+    default: "None"
+    description: "ElementRect or list of ElementRect for the y strip backgrounds."
+  - name: by_layer_x
+    type: bool
+    required: false
+    default: "False"
+    description: "Map the x element list to facet-variable layers instead of individual strips."
+  - name: by_layer_y
+    type: bool
+    required: false
+    default: "False"
+    description: "Map the y element list to facet-variable layers instead of individual strips."
+mutates: "execution_class=pure_function; no shared/global state mutation; returns_kind=new_object"
+returns: "A StripSplit ggproto instance."
+requires: []
+writes: []
+examples:
+  - "strip_split(position=['bottom', 'right'])"
+failure_fixes:
+  - when: "position contains a value other than 'top'/'bottom'/'left'/'right'."
+    suggest:
+      - "Use only 'top', 'bottom', 'left', 'right' entries in position."
+    explanation: "strip_split(['top', 'diagonal']) raises via _arg_match_multiple (test_split_bad_position_rejected)."
+  - when: "len(position) does not match the number of faceting variables."
+    suggest:
+      - "Supply exactly one position per faceting variable to avoid the recycling warning."
+    explanation: "strip_split(['bottom']) with 2 facet variables emits a UserWarning and cyclically recycles position (test_split_position_recycle_warns)."
+related:
+  - ggh4x.StripSplit
+  - ggh4x.strip_nested

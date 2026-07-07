@@ -1,0 +1,15 @@
+id: ggh4x.text_aimed_nudge_position_conflict
+name: "geom_text_aimed() combining nudge_x/nudge_y with a non-identity position"
+detection:
+  detector_id: ggh4x.text_aimed_nudge_position_conflict
+  static_only: true
+why_bad: >
+  geom_text_aimed() raises at call time when a nonzero nudge_x/nudge_y is
+  combined with a position argument other than "identity" — the two are
+  alternative ways of offsetting labels and cannot both apply, so the
+  layer never gets built.
+correct_pattern: ggh4x.aimed_text_toward_target
+code_example_wrong: |
+  geom_text_aimed(aes(label="car"), nudge_x=1, position="dodge")
+code_example_right: |
+  geom_text_aimed(aes(label="car"), nudge_x=1)

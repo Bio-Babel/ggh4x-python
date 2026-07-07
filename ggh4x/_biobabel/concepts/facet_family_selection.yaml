@@ -1,0 +1,30 @@
+id: ggh4x.facet_family_selection
+name: "Choosing among the extended facet family"
+category: facets
+description: >
+  ggh4x provides five facet functions that share one ggproto pipeline
+  (`FacetGrid2`'s decomposed `draw_panels`: setup_axes -> setup_aspect_ratio
+  -> setup_panel_table -> attach_axes -> strip setup/incorporate -> finish_panels)
+  but differ in layout algorithm and default strip.
+invariants:
+  - "facet_grid2 and facet_wrap2 differ from stock ggplot2 facet_grid/facet_wrap only in extras (axes=, remove_labels=, independent=, render_empty=, strip=); they still auto-compute layout from rows/cols or facets cross-products."
+  - "facet_nested and facet_nested_wrap are facet_grid2/facet_wrap2 plus a StripNested default strip (merging adjacent same-label strips) and nest_line/solo_line/resect hierarchy-line parameters; variable order in rows/cols/facets encodes hierarchy (first = outermost)."
+  - "facet_manual is the only member with a user-specified layout (design=); it does not auto-compute placement from variable cross-products, and has no nest_line/bleed/independent parameters."
+  - "independent='x'/'y'/'all' on facet_grid2/facet_nested requires the matching axis to already be free in scales=; combining independent scales with space='free_<axis>' or remove_labels on the same axis is auto-resolved (space/labels forced off) with a warning, not an error."
+mental_model: |
+  For R users: this is the same five-function family as R ggh4x
+  (`facet_grid2`/`facet_wrap2`/`facet_nested`/`facet_nested_wrap`/
+  `facet_manual`), with the same parameter names and defaults.
+
+  For Python users: pick by two independent questions — (1) grid vs wrap
+  vs manual layout, and (2) do strip labels need to merge/nest? `facet_nested*`
+  is just `facet_grid2`/`facet_wrap2` with a different default `strip=`
+  and three extra hierarchy-line parameters, not a separate layout engine.
+
+  General: `facet_manual`'s `design=` is the escape hatch for layouts no
+  cross-product of facet variables can express (panels spanning multiple
+  cells); reach for it only when the panel arrangement itself, not just the
+  strip labels, needs to be hand-specified.
+related_concepts:
+  - ggh4x.strip_protocol
+  - ggh4x.nest_line_theme_gating

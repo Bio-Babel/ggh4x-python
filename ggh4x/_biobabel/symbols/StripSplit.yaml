@@ -1,0 +1,23 @@
+id: ggh4x.StripSplit
+import_path: ggh4x.strip_split.StripSplit
+kind: class
+signature: "class StripSplit(StripNested)"
+purpose: "ggproto Strip subclass placing each faceting variable's strip on a specific panel side."
+description: >
+  Not directly instantiated by users; built and configured via
+  `strip_split()`. `params` adds a `position` list (side names) on top of
+  the inherited `clip`/`size`/`bleed`. `get_strips` has a different
+  signature than the base `Strip.get_strips` (a single `vars`/`layout`
+  argument instead of separate x/y) — an intentional, documented signature
+  divergence for this subclass. `incorporate_wrap` trivially delegates to
+  `incorporate_grid(panels, False)`.
+parameters: []
+mutates: "execution_class=pure_function; setup()/get_strips() mutate self.elements/self.strips via ggproto's _set (as in Strip); incorporate_grid/incorporate_wrap return a new Gtable; returns_kind=new_object"
+returns: "N/A (class); get_strips builds self.strips keyed by top/bottom/left/right sides."
+requires: []
+writes: []
+examples: []
+failure_fixes: []
+related:
+  - ggh4x.strip_split
+  - ggh4x.StripNested

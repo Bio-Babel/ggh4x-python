@@ -1,0 +1,33 @@
+id: ggh4x.multiscale_aesthetic_rewrite
+name: "How multiple colour/fill scales coexist on one plot"
+category: scales
+description: >
+  `scale_colour_multi`/`scale_color_multi`/`scale_fill_multi`/`scale_listed`
+  let one plot carry several colour-like scales at once, which plain
+  ggplot2 forbids (adding a second scale for the same aesthetic replaces
+  the first). They work around this by never actually creating a second
+  scale for the *standard* aesthetic: each sub-scale targets a distinct
+  non-standard aesthetic name (e.g. `fill1`, `fill2`, `swidth`), and the
+  `+`-time handler rewrites each affected layer's geom so that name is
+  exposed to the geom's native `fill`/`colour` slot.
+invariants:
+  - "Each layer that should use one of the multi-scales must map its colour/fill through a distinct non-standard aesthetic name (e.g. aes(fill1='cyl')), not the standard 'colour'/'fill' name — the standard name is what gets rewritten in, not what you map from."
+  - "The layer's stat is left untouched by the rewrite; only the geom is cloned (handle_na/draw_key wrapped, default_aes/required_aes/optional_aes renamed)."
+  - "scale_listed() additionally mutates each input scale's .guide attribute in place (materializing string/None/False guides into concrete Guide instances) as a side effect of validation, before the scales are added to the plot."
+  - "scale_color_multi is a pure alias of scale_colour_multi; the American and British spellings always produce identical scales, never two independently-defined implementations."
+mental_model: |
+  For R users: same trick as R ggh4x's `scale_listed()`/`scale_*_multi()`
+  (itself inspired by the ggnewscale package) — a per-layer aesthetic-name
+  swap performed at `+`-time via `ggplot_add`, translated here to a
+  `functools.singledispatch` handler on `update_ggplot`.
+
+  For Python users: this is not the same mechanism as `facetted_pos_scales`/
+  `force_panelsizes` (which decorate the *facet*) — multi-scale handlers
+  rewrite *layers*, appending distinct scales to `plot.scales` rather than
+  replacing one scale.
+
+  General: if a plot needs N independent colour gradients, it needs N
+  layers each mapped through its own uniquely-named aesthetic, bundled into
+  one `scale_*_multi(aesthetics=[...])` or `scale_listed(scalelist=...,
+  replaces=...)` call.
+related_concepts: []

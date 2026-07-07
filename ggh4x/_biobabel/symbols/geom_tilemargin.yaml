@@ -1,0 +1,80 @@
+id: ggh4x.geom_tilemargin
+import_path: ggh4x.geom_rectrug.geom_tilemargin
+kind: function
+signature: "def geom_tilemargin(mapping=None, data=None, stat='identity', position='identity', outside=False, sides='bl', length=None, linejoin='mitre', na_rm=False, show_legend=None, inherit_aes=True, **kwargs)"
+purpose: "Draw ranged rug-style rectangle margin annotations, parameterised by centre x/y and width/height."
+description: >
+  Same margin-rectangle drawing and parameter list as `geom_rectmargin`,
+  but the backing geom (`GeomTileMargin`) converts centre `x`/`y` plus
+  `width`/`height` into `xmin/xmax/ymin/ymax` before delegating to
+  `GeomRectMargin`'s unchanged `draw_panel`.
+parameters:
+  - name: mapping
+    type: Mapping
+    required: false
+    default: "None"
+    description: "aes() mapping; expects x, y, optional width/height."
+  - name: data
+    type: Any
+    required: false
+    default: "None"
+    description: "Layer data or callable."
+  - name: stat
+    type: str
+    required: false
+    default: "'identity'"
+    description: "Stat used to transform the data."
+  - name: position
+    type: str
+    required: false
+    default: "'identity'"
+    description: "Position adjustment."
+  - name: outside
+    type: bool
+    required: false
+    default: "False"
+    description: "Move rectangles outside the plot area."
+  - name: sides
+    type: str
+    required: false
+    default: "'bl'"
+    description: "Any combination of 't','r','b','l' selecting which margins to draw bands on."
+  - name: length
+    type: Any
+    required: false
+    default: "None"
+    description: "A grid_py.Unit for band length; None defaults to Unit(0.03, 'npc')."
+  - name: linejoin
+    type: str
+    required: false
+    default: "'mitre'"
+    description: "Line join style."
+  - name: na_rm
+    type: bool
+    required: false
+    default: "False"
+    description: "Remove NA silently when True."
+  - name: show_legend
+    type: Any
+    required: false
+    default: "None"
+    description: "Whether to show the layer in the legend."
+  - name: inherit_aes
+    type: bool
+    required: false
+    default: "True"
+    description: "Whether to inherit plot aesthetics."
+  - name: kwargs
+    type: Any
+    required: false
+    description: "Extra aesthetics/params."
+mutates: "execution_class=pure_function; no in-place mutation; returns_kind=new_object"
+returns: "A ggplot2_py Layer backed by GeomTileMargin."
+requires: []
+writes: []
+examples:
+  - "geom_tilemargin(aes(species='Species'))"
+failure_fixes: []
+related:
+  - ggh4x.GeomTileMargin
+  - ggh4x.geom_rectmargin

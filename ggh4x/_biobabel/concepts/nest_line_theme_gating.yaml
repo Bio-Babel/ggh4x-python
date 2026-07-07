@@ -1,0 +1,28 @@
+id: ggh4x.nest_line_theme_gating
+name: "Nest lines are gated by a dedicated theme element"
+category: theming
+description: >
+  `facet_nested`/`facet_nested_wrap`'s `nest_line=` parameter interacts
+  with a package-registered theme element, `ggh4x.facet.nestline`
+  (registered into ggplot2_py's global element tree at `ggh4x` import time
+  by `ggh4x_theme_elements()`).
+invariants:
+  - "nest_line=None (the default) inherits the theme's ggh4x.facet.nestline element, whose own default is element_blank() — so by default, facet_nested()/facet_nested_wrap() draw no hierarchy lines at all until the theme is changed."
+  - "To turn nest lines on while leaving nest_line at its default None, set the theme element explicitly: theme(**{'ggh4x.facet.nestline': element_line(...)})."
+  - "Passing nest_line=True/False/an explicit ElementLine or ElementBlank to facet_nested()/facet_nested_wrap() sets the line style directly for that facet, independent of the theme's ggh4x.facet.nestline default."
+  - "solo_line=False (default) only draws nest lines under multi-child ('parent') strips; single-child strips get no line unless solo_line=True."
+mental_model: |
+  For R users: mirrors R ggh4x's `.onLoad`-time registration of the
+  `ggh4x.facet.nestline` theme element and facet_nested()'s `nest_line`
+  argument.
+
+  For Python users: `ggh4x.facet.nestline` behaves like any other theme
+  element name (e.g. `panel.grid`) — it can be set in `theme()` using a
+  string key, and it participates in the normal ggplot2 element
+  inheritance tree (it inherits from the base `line` element).
+
+  General: if a nested facet's lines aren't appearing, check nest_line=
+  first (is it left at the blank-by-default None?), then check whether the
+  theme actually sets `ggh4x.facet.nestline` to a non-blank element.
+related_concepts:
+  - ggh4x.facet_family_selection

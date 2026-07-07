@@ -1,0 +1,23 @@
+id: ggh4x.StatDifference
+import_path: ggh4x.stat_difference.StatDifference
+kind: class
+signature: "class StatDifference(Stat)"
+purpose: "ggproto Stat computing a signed-difference ribbon with crossover interpolation."
+description: >
+  `required_aes = ["x|y", "ymin|xmin", "ymax|xmax"]`, `default_aes =
+  aes(fill=after_stat(sign))`. Not directly instantiated by users; built and
+  configured via `stat_difference()`. Sorts each group by the main axis,
+  run-length encodes `sign(ymax - ymin)`, interpolates crossover positions,
+  then `compute_panel` renumbers `group` per monotone-sign run so positive
+  and negative segments get distinct fills. `compute_panel` explicitly
+  dispatches to its ggproto parent's implementation (`ggproto_parent(Stat,
+  self).compute_panel(...)`) rather than plain Python `super()`.
+parameters: []
+mutates: "execution_class=pure_function; compute_panel copies data before mutating columns, setup_params mutates and returns the same params dict object; returns_kind=new_object"
+returns: "N/A (class); compute_group returns a pandas.DataFrame with columns x, ymin, ymax, id, sign."
+requires: []
+writes: []
+examples: []
+failure_fixes: []
+related:
+  - ggh4x.stat_difference

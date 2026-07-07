@@ -1,0 +1,29 @@
+id: ggh4x.layered_listed_scales
+name: "Layering ready-made scales that replace different aesthetics"
+description: >
+  scale_listed() takes a list of already-built, single-non-standard-
+  aesthetic Scale objects (each created with an aesthetics= argument) and a
+  parallel replaces= list naming the standard aesthetic each substitutes,
+  grouping and re-attaching them without the usual last-scale-wins
+  collision.
+code_template: |
+  from ggplot2_py import ggplot, aes, geom_raster, coord_fixed, scale_fill_distiller, scale_fill_brewer
+  from ggh4x import geom_tilemargin, scale_listed
+
+  gh = (
+      ggplot(iris_df, aes("id", "id"))
+      + geom_tilemargin(aes(species="Species"))
+      + geom_raster(aes("x", "y", cor="correlation"), data=corr_df)
+      + coord_fixed()
+  )
+  gh + scale_listed(
+      scalelist=[
+          scale_fill_distiller(palette="RdBu", aesthetics="cor"),
+          scale_fill_brewer(palette="Set1", aesthetics="species"),
+      ],
+      replaces=["fill", "fill"],
+  )
+applicable_to:
+  - ggh4x.scale_listed
+  - ggh4x.multiscale_aesthetic_rewrite
+typical_use_case: "Two or more pre-built scales (e.g. a diverging correlation-value palette and a categorical group palette) both need to render as 'fill' on the same plot."

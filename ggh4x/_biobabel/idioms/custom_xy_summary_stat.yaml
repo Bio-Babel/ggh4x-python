@@ -1,0 +1,21 @@
+id: ggh4x.custom_xy_summary_stat
+name: "Custom per-group x/y summary function"
+description: >
+  stat_funxy(funx=, funy=, geom=) applies arbitrary per-group summary
+  functions to x and y independently; funx/funy may return a different
+  length than the input (e.g. a [min, max] range), with crop_other=
+  controlling how other columns are recycled against that result.
+code_template: |
+  import numpy as np
+  from ggplot2_py import ggplot, aes, geom_point
+  from ggh4x import stat_funxy
+
+  ggplot(faithful, aes(x="waiting", y="eruptions", group="group")) + geom_point() + stat_funxy(
+      aes(color="group"),
+      funx=lambda v: [float(np.min(v)), float(np.max(v))],
+      funy=np.mean,
+      geom="line",
+  )
+applicable_to:
+  - ggh4x.stat_funxy
+typical_use_case: "A per-group summary is needed that stock ggplot2 stats do not provide, e.g. drawing a group's x-range at its mean y value."

@@ -1,0 +1,28 @@
+id: ggh4x.FacetGrid2
+import_path: ggh4x.facet_grid2.FacetGrid2
+kind: class
+signature: ''
+purpose: "ggproto Facet backing facet_grid2(); decomposes draw_panels into strip-pluggable, overridable pipeline steps."
+description: >
+  Not directly instantiated by users — built via `facet_grid2()`'s internal
+  `new_grid_facets(...)` helper, which sets `shrink`, `strip`, and `params`
+  post-construction (ggproto-style, no conventional `__init__`). Subclass of
+  `ggplot2_py.facet.FacetGrid`. Fully replaces `draw_panels` with a
+  decomposed pipeline (`setup_axes` -> `setup_aspect_ratio` ->
+  `setup_panel_table` -> `attach_axes` -> strip `setup`/`incorporate_grid`
+  -> `finish_panels`), each step an overridable seam — the mechanism
+  `FacetNested` hooks into to add nested strips and hierarchy lines.
+parameters: []
+mutates: "execution_class=builder; internal drawing methods build new Gtables rather than mutating the plot; returns_kind=new_object"
+returns: "N/A (class); draw_panels returns a Gtable."
+requires: []
+writes: []
+examples: []
+failure_fixes:
+  - when: "free['x'] or free['y'] is True but the coord does not support free scales."
+    suggest:
+      - "Use a coord that supports free scales (e.g. the default CoordCartesian) when scales='free'/'free_x'/'free_y' is requested."
+    explanation: "FacetGrid2.draw_panels raises via cli_abort when free scales are requested but coord.is_free() is False."
+related:
+  - ggh4x.facet_grid2
+  - ggh4x.FacetNested

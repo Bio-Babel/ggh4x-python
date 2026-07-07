@@ -1,0 +1,46 @@
+id: ggh4x.scale_x_facet
+import_path: ggh4x.panel_scales.scale_x_facet
+kind: function
+signature: "def scale_x_facet(expr, *args, type='continuous', **kwargs) -> ScaleFacet"
+purpose: "Pair a panel predicate with a resolved scale_x_<type>(...) scale, for per-panel x customization."
+description: >
+  Shorthand for `scale_facet(expr, 'x', *args, type=type, **kwargs)`.
+  `expr` is a panel predicate (callable or a string evaluated via
+  `pandas.DataFrame.eval` against the panel layout). At `+`-time, this
+  lowers to (or appends onto an existing) `facetted_pos_scales()`-style
+  container; requires the target axis to be free. Repeated calls for
+  overlapping panels stack (append, not overwrite) — the first-added
+  scale wins where predicates overlap. Raises when added to an unfaceted
+  (`FacetNull`) plot.
+parameters:
+  - name: expr
+    type: Any
+    required: true
+    description: "Panel predicate: callable or DataFrame.eval-compatible string."
+  - name: args
+    type: Any
+    required: false
+    description: "Positional args forwarded to the resolved scale_x_<type>(...) constructor."
+  - name: type
+    type: str
+    required: false
+    default: "'continuous'"
+    description: "Scale type suffix resolved as scale_x_<type>."
+  - name: kwargs
+    type: Any
+    required: false
+    description: "Keyword args forwarded to the resolved scale_x_<type>(...) constructor."
+mutates: "execution_class=pure_function; the +-time handler either appends to an existing FreeScaled facet's scale list or lowers to facetted_pos_scales; returns_kind=new_object"
+returns: "A ScaleFacet pairing (predicate, scale), consumed by the ggplot + operator."
+requires: []
+writes: []
+examples:
+  - "p + facet_grid2(cols=vars('drv'), scales='free_x') + scale_x_facet(lambda d: d['COL'] == 1, breaks=[2, 4, 6])"
+failure_fixes:
+  - when: "scale_x_facet()/scale_y_facet() is added to an unfaceted plot."
+    suggest:
+      - "Add a facet (e.g. facet_wrap2/facet_grid2) with a free matching axis before adding scale_x_facet/scale_y_facet."
+    explanation: "Adding scale_x_facet(...) to a FacetNull plot raises ValueError (test_scale_facet_rejects_facetnull)."
+related:
+  - ggh4x.scale_y_facet
+  - ggh4x.facetted_pos_scales

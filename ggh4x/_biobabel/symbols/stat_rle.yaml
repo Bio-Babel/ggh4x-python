@@ -1,0 +1,75 @@
+id: ggh4x.stat_rle
+import_path: ggh4x.stat_rle.stat_rle
+kind: function
+signature: "def stat_rle(mapping=None, data=None, geom='rect', position='identity', *, align='none', na_rm=False, orientation='x', show_legend=None, inherit_aes=True, **kwargs)"
+purpose: "Run-length-encode the label aesthetic (ordered by x) and draw each run as a rectangle."
+description: >
+  Requires `x` and `label` aesthetics. Orders data by `x`, run-length
+  encodes `label` (treating consecutive NA as its own valid run), and
+  computes start/end extents per run under one of four alignment modes.
+  `align="center"` closes gaps between consecutive runs; the default
+  `"none"` leaves each run at its own exact boundary.
+parameters:
+  - name: mapping
+    type: Mapping
+    required: false
+    default: "None"
+    description: "aes() mapping; requires x and label."
+  - name: data
+    type: Any
+    required: false
+    default: "None"
+    description: "Layer data or callable."
+  - name: geom
+    type: str
+    required: false
+    default: "'rect'"
+    description: "Geometry used to render the layer."
+  - name: position
+    type: str
+    required: false
+    default: "'identity'"
+    description: "Position adjustment."
+  - name: align
+    type: str
+    required: false
+    default: "'none'"
+    description: "One of 'none', 'centre'/'center', 'start', 'end'; 'center' is normalized to 'centre'."
+  - name: na_rm
+    type: bool
+    required: false
+    default: "False"
+    description: "Remove missing values silently when True."
+  - name: orientation
+    type: str
+    required: false
+    default: "'x'"
+    description: "'x' or 'y'."
+  - name: show_legend
+    type: bool
+    required: false
+    default: "None"
+    description: "Whether to show the layer in the legend."
+  - name: inherit_aes
+    type: bool
+    required: false
+    default: "True"
+    description: "Whether to inherit plot aesthetics."
+  - name: kwargs
+    type: Any
+    required: false
+    description: "Other layer args."
+mutates: "execution_class=pure_function; align is validated/normalized eagerly (raises before construction on invalid value); returns_kind=new_object"
+returns: "A ggplot2_py Layer backed by StatRle, with default geom 'rect'."
+requires: []
+writes: []
+examples:
+  - "stat_rle(aes(label='lab'))"
+  - "stat_rle(aes(label='lab'), align='center')"
+failure_fixes:
+  - when: "align is not one of 'none', 'centre', 'center', 'start', 'end'."
+    suggest:
+      - "Pass align as one of 'none', 'centre'/'center', 'start', or 'end'."
+    explanation: "stat_rle(align='middle') raises via arg_match0 for any value outside the allowed set (test_constructor_invalid_align_raises)."
+related:
+  - ggh4x.StatRle

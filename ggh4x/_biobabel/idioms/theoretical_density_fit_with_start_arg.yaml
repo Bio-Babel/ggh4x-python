@@ -1,0 +1,16 @@
+id: ggh4x.theoretical_density_fit_with_start_arg
+name: "Fitting distributions with no natural starting values"
+description: >
+  Distributions without a natural default starting point for MLE (e.g.
+  Student-t, F) need an explicit start_arg= dict of starting parameter
+  values passed to stat_theodensity(), or the optimizer may fail to
+  converge.
+code_template: |
+  from ggplot2_py import ggplot, aes
+  from ggh4x import stat_theodensity
+
+  ggplot(tdf, aes(x="x", color="group")) + stat_theodensity(distri="t", start_arg={"df": 3})
+  ggplot(fdf, aes(x="x", color="group")) + stat_theodensity(distri="f", start_arg={"df1": 3, "df2": 3})
+applicable_to:
+  - ggh4x.stat_theodensity
+typical_use_case: "Fitting a Student-t, F, or similar distribution family whose MLE has no reliable default starting point."

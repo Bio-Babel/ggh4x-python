@@ -1,0 +1,24 @@
+id: ggh4x.center_limits
+import_path: ggh4x.conveniences.center_limits
+kind: function
+signature: "def center_limits(around=0)"
+purpose: "Return a function that centers scale limits symmetrically around a value."
+description: >
+  Factory returning a closure `_limits(input)` computing
+  `[-1, 1] * max(abs(input - around)) + around`, i.e. limits that are
+  symmetric around `around`. Intended for use as a continuous scale's
+  `limits=` callable, e.g. to center a diverging fill scale at zero.
+parameters:
+  - name: around
+    type: float
+    required: false
+    default: "0"
+    description: "The value about which the returned limits are centered."
+mutates: "execution_class=pure_function; no in-place mutation; returns_kind=new_object"
+returns: "A callable `_limits(input) -> numpy.ndarray` returning a 2-element array of symmetric limits."
+requires: []
+writes: []
+examples:
+  - "scale_fill_gradient2(limits=center_limits())"
+failure_fixes: []
+related: []

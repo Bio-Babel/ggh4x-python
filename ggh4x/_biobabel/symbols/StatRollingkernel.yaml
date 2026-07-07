@@ -1,0 +1,21 @@
+id: ggh4x.StatRollingkernel
+import_path: ggh4x.stat_rollingkernel.StatRollingkernel
+kind: class
+signature: "class StatRollingkernel(Stat)"
+purpose: "ggproto Stat computing a kernel-weighted rolling average trendline for one group of x/y data."
+description: >
+  `required_aes = ["x", "y"]`. Not directly instantiated by users; built and
+  configured via `stat_rollingkernel()`. Computed variables are x, y,
+  weight, scaled. `setup_params` resolves a string `kernel` name to its
+  callable via a lookup table, and raises for unrecognized names; a string
+  `bw` bandwidth rule is likewise validated (and raises if unrecognized)
+  inside `compute_group`.
+parameters: []
+mutates: "execution_class=pure_function; setup_params mutates and returns the same params dict object (sets flipped_aes, resolves kernel); compute_group is pure w.r.t. data; returns_kind=new_object"
+returns: "N/A (class); compute_group returns a pandas.DataFrame with columns x, y, weight, scaled."
+requires: []
+writes: []
+examples: []
+failure_fixes: []
+related:
+  - ggh4x.stat_rollingkernel

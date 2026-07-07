@@ -1,0 +1,28 @@
+id: ggh4x.elem_list_text
+import_path: ggh4x.conveniences.elem_list_text
+kind: function
+signature: "def elem_list_text(**kwargs)"
+purpose: "Build a list of element_text theme elements from vectorised arguments."
+description: >
+  Thin wrapper over `distribute_args(fun=element_text, **kwargs)` (the same
+  default target function as bare `distribute_args()`): each vectorised
+  keyword (e.g. `colour=["dodgerblue", "limegreen"]`) produces one
+  `ElementText` per position. Used to build the per-strip
+  `text_x=`/`text_y=` element lists passed to `strip_themed()` or
+  `strip_nested()`.
+parameters:
+  - name: kwargs
+    type: Any
+    required: false
+    description: "Vectorised element_text arguments (colour, angle, family, ...), forwarded to distribute_args."
+mutates: "execution_class=pure_function; no in-place mutation; returns_kind=new_object"
+returns: "A list of ElementText objects, or a single ElementText when no arguments remain."
+requires: []
+writes: []
+examples:
+  - "elem_list_text(colour=['dodgerblue', 'limegreen'])"
+failure_fixes: []
+related:
+  - ggh4x.distribute_args
+  - ggh4x.strip_themed
+  - ggh4x.strip_nested

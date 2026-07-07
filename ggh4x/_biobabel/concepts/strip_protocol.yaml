@@ -1,0 +1,32 @@
+id: ggh4x.strip_protocol
+name: "The Strip protocol"
+category: facets
+description: >
+  Facet strip appearance (plain, per-strip themed, hierarchically merged,
+  side-split, or corner tags) is controlled by a `Strip` ggproto object
+  passed as the `strip=` argument of `facet_grid2`/`facet_wrap2`/
+  `facet_nested`/`facet_nested_wrap`/`facet_manual`, resolved through
+  `resolve_strip()`.
+invariants:
+  - "strip= accepts a strip name string ('vanilla'/'themed'/'nested'/'split'/'tag'), a strip_*() factory callable, or an already-built Strip instance — never call the Strip class directly."
+  - "A plain string always resolves to an all-defaults instance; to customize strip parameters (clip, size, per-strip elements, bleed, position, tag order/just), build the Strip with its strip_*() factory and pass the resulting instance."
+  - "resolve_strip() passes an existing Strip instance through unchanged (identity, not a clone) — mutating a Strip instance after passing it to a facet is not a documented, supported pattern."
+  - "StripNested (and facet_nested's default strip) merges adjacent strips sharing the same label at one facet layer; StripTag never merges — it always places exactly one tag per panel, even though it shares StripThemed's per-element theming machinery with StripNested."
+mental_model: |
+  For R users: this is the same Strip ggproto hierarchy as R ggh4x's
+  `strip_vanilla()`/`strip_themed()`/`strip_nested()`/`strip_split()`/
+  `strip_tag()`, resolved the same way by `assert_strip()`
+  (`resolve_strip` in this port).
+
+  For Python users: think of `strip=` like `geom=` on a stat factory — a
+  string is a shorthand for "build me the default instance of this kind,"
+  and you only get to configure the underlying object by calling its
+  factory function explicitly and passing the result.
+
+  General: five Strip subclasses share one dispatch mechanism
+  (`resolve_strip`) and one facet-side drawing protocol
+  (`setup`/`incorporate_grid`/`incorporate_wrap`); choosing among them is a
+  choice of *strip layout policy*, orthogonal to which facet function you
+  use.
+related_concepts:
+  - ggh4x.facet_family_selection

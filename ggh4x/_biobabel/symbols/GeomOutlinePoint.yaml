@@ -1,0 +1,22 @@
+id: ggh4x.GeomOutlinePoint
+import_path: ggh4x.geom_outline_point.GeomOutlinePoint
+kind: class
+signature: "class GeomOutlinePoint(GeomPoint)"
+purpose: "ggproto Geom drawing points with a shared background outline stroke."
+description: >
+  Not directly instantiated by users; built and configured via
+  `geom_outline_point()`. `draw_panel` deliberately does not call its
+  ggproto parent — it builds both the background-stroke grob and the
+  foreground-point grob itself. `na_rm` defaults to `True` in `draw_panel`,
+  unlike the parent `GeomPoint`'s default of `False`. Alpha is applied to
+  both stacked grobs, so the outline can show through a semi-transparent
+  fill (mirrors R exactly).
+parameters: []
+mutates: "execution_class=pure_function; draw_panel builds a new grob tree, no in-place mutation of data; returns_kind=new_object"
+returns: "N/A (class); draw_panel returns a grid grob_tree named 'outline_points' with background and foreground point layers."
+requires: []
+writes: []
+examples: []
+failure_fixes: []
+related:
+  - ggh4x.geom_outline_point

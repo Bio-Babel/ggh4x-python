@@ -1,0 +1,30 @@
+id: ggh4x.StripTag
+import_path: ggh4x.strip_tag.StripTag
+kind: class
+signature: "class StripTag(StripThemed)"
+purpose: "ggproto Strip subclass rendering facet labels as small fitted tag boxes anchored inside each panel."
+description: >
+  A sibling of `StripNested`, not related to it by inheritance
+  (`issubclass(StripTag, StripNested)` is False — it does not merge/span
+  labels across panels; one tag is always placed per panel, with no
+  de-duplication). Not directly instantiated by users; built and configured
+  via `strip_tag()`. `setup` builds per-panel (non-deduplicated) variable
+  frames since tags overlap panels rather than spanning shared groups;
+  `finish_strip` (unlike the base self-less version) is a bound method that
+  reads `self.params["just"]` to build fitted-box `Gtable`s wrapped in a
+  justified `Viewport`; `incorporate_wrap`/`incorporate_grid` place tag
+  grobs directly onto existing panel cells without adding new rows/columns.
+parameters: []
+mutates: "execution_class=pure_function; setup mutates self.elements/self.strips via ggproto's _set; finish_strip/incorporate_* are pure builders; returns_kind=new_object"
+returns: "N/A (class); incorporate_grid/incorporate_wrap return a Gtable with tag grobs placed inside existing panel cells."
+requires: []
+writes: []
+examples: []
+failure_fixes:
+  - when: "Expecting StripTag to merge/span labels across panels the way StripNested does."
+    suggest:
+      - "Use StripNested (via strip_nested()) if run-merging of adjacent same-label strips is required; StripTag always places one tag per panel."
+    explanation: "tests/test_strip_subclasses.py::test_inheritance_chain confirms StripTag is not a StripNested subclass; test_tag_setup_per_panel_no_dedup confirms no merging occurs."
+related:
+  - ggh4x.strip_tag
+  - ggh4x.StripThemed

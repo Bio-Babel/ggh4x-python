@@ -1,0 +1,16 @@
+id: ggh4x.nested_strip_bleed_merge
+name: "Controlling nested strip merges with bleed"
+description: >
+  strip_nested()'s bleed= controls whether an inner faceting variable's
+  strip labels may merge across an outer variable's boundary (bleed=True)
+  or stay blocked at that boundary (bleed=False, the default).
+code_template: |
+  from ggplot2_py import ggplot, aes, geom_point, vars
+  from ggh4x import facet_wrap2, strip_nested
+
+  p = ggplot(mpg, aes("displ", "hwy")) + geom_point()
+
+  p + facet_wrap2(vars("cyl", "drv"), ncol=4, strip=strip_nested(bleed=True))
+applicable_to:
+  - ggh4x.strip_nested
+typical_use_case: "Adjacent panels share an inner-variable label across an outer-variable boundary, and that inner label should visually merge into one strip."

@@ -1,0 +1,22 @@
+id: ggh4x.GeomTextAimed
+import_path: ggh4x.geom_text_aimed.GeomTextAimed
+kind: class
+signature: "class GeomTextAimed(GeomText)"
+purpose: "ggproto Geom drawing text labels rotated to aim at a target (xend, yend) point."
+description: >
+  `default_aes` includes `xend=-inf, yend=-inf, angle=0, hjust=0.5,
+  vjust=0.5`; `extra_params = ("na_rm", "flip_upsidedown")`. Not directly
+  instantiated by users; built and configured via `geom_text_aimed()`.
+  `draw_panel` copies the data, coord-transforms the anchor `(x,y)` and the
+  aim target `(xend,yend)` separately, and computes per-label rotation and
+  justification (which may itself be string keywords like `"inward"`
+  resolved via `compute_just`) from the two transformed points.
+parameters: []
+mutates: "execution_class=pure_function; draw_panel copies data before mutating; returns_kind=new_object"
+returns: "N/A (class); draw_panel returns an AimedTextGrob."
+requires: []
+writes: []
+examples: []
+failure_fixes: []
+related:
+  - ggh4x.geom_text_aimed

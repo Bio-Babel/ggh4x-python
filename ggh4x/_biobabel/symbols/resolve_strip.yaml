@@ -1,0 +1,47 @@
+id: ggh4x.resolve_strip
+import_path: ggh4x.strip_vanilla.resolve_strip
+kind: function
+signature: "def resolve_strip(strip, arg='strip', env=None) -> Strip"
+purpose: "Normalize a user-supplied strip= specification (string, factory callable, or Strip instance) into a concrete Strip."
+description: >
+  Used internally by `facet_grid2`/`facet_wrap2`/`facet_nested`/
+  `facet_nested_wrap`/`facet_manual` to resolve their `strip=` argument. A
+  `str` (e.g. `"vanilla"`, `"nested"`, `"themed"`, `"split"`, `"tag"`) is
+  looked up as `"strip_" + strip` and called with no arguments. A callable
+  is invoked with no arguments. A `Strip` instance is passed through
+  unchanged (identity, not a clone) — this is how users customize strip
+  parameters, since a bare string always yields the all-defaults instance.
+  Anything else (including `None`) raises. `assert_strip = resolve_strip`
+  is a deliberate alias kept for external-package compatibility.
+parameters:
+  - name: strip
+    type: Any
+    required: true
+    description: "A strip name string, a strip factory callable, or an already-built Strip instance."
+  - name: arg
+    type: str
+    required: false
+    default: "'strip'"
+    description: "Parameter name used only in the error message."
+  - name: env
+    type: Any
+    required: false
+    default: "None"
+    description: "Unused; kept only for R-signature parity."
+mutates: "execution_class=pure_function; passthrough of an existing Strip instance is identity, not a clone; calling a factory constructs a new Strip; returns_kind=new_object"
+returns: "A Strip instance."
+requires: []
+writes: []
+examples:
+  - "resolve_strip('nested')"
+  - "resolve_strip(strip_vanilla)"
+failure_fixes:
+  - when: "strip is not a valid strip name, factory callable, or Strip instance (e.g. an int or None)."
+    suggest:
+      - "Pass a strip name string ('vanilla'/'themed'/'nested'/'split'/'tag'), a strip_*() factory callable, or a Strip instance."
+    explanation: "resolve_strip(42) raises ValueError via cli_abort('The `{arg}` argument must be a valid strip specification.') (test_resolve_strip_bad_arg)."
+related:
+  - ggh4x.Strip
+  - ggh4x.strip_vanilla
+  - ggh4x.facet_grid2
+  - ggh4x.facet_wrap2

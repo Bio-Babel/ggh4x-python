@@ -1,0 +1,28 @@
+id: ggh4x.StripNested
+import_path: ggh4x.strip_nested.StripNested
+kind: class
+signature: "class StripNested(StripThemed)"
+purpose: "ggproto Strip subclass merging adjacent same-label strips into one spanning strip cell."
+description: >
+  `params = {"bleed": False}` on top of the inherited `clip`/`size`. Not
+  directly instantiated by users; built and configured via
+  `strip_nested()`; is the default `strip=` for `facet_nested()`/
+  `facet_nested_wrap()`. `assemble_strip` merges adjacent strips at the same
+  layer sharing a label via run-length encoding (delegating to the base
+  `Strip.assemble_strip` for single-layer inputs); `finish_strip` builds one
+  multi-cell `Gtable` per merged run, or delegates to the self-less
+  `Strip.finish_strip` when the layout has no `"layer"` column.
+parameters: []
+mutates: "execution_class=pure_function; assemble_strip/finish_strip are pure builders; self.elements/self.strips mutation still happens only via the inherited setup/get_strips; returns_kind=new_object"
+returns: "N/A (class); assemble_strip returns a placement DataFrame with adjacent same-label strips merged."
+requires: []
+writes: []
+examples: []
+failure_fixes:
+  - when: "Expecting an inner-layer label to merge across an outer-layer boundary with the default strip_nested() settings."
+    suggest:
+      - "Pass strip_nested(bleed=True) to allow cross-boundary merges of an inner faceting variable's labels."
+    explanation: "tests/test_strip_subclasses.py::test_nested_bleed_true_merges_inner_layer shows bleed=False (default) prevents merges across outer-layer boundaries that bleed=True allows."
+related:
+  - ggh4x.strip_nested
+  - ggh4x.StripThemed

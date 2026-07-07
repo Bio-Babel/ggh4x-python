@@ -1,0 +1,20 @@
+id: ggh4x.polygon_raster_with_linear_transform
+name: "Shearing or rotating a raster grid"
+description: >
+  geom_polygonraster() draws each raster pixel as an explicit polygon so it
+  can be warped by a position adjustment; position_lineartrans(shear=...)
+  or position_lineartrans(angle=...) shears/rotates the whole grid.
+  coord_fixed() is typically used alongside it to preserve the transformed
+  aspect.
+code_template: |
+  from ggplot2_py import ggplot, aes, coord_fixed, scale_fill_viridis_c, theme_void
+  from ggh4x import geom_polygonraster, position_lineartrans
+
+  gv = ggplot(volcano_long, aes("x", "y", fill="value")) + scale_fill_viridis_c(guide="none") + theme_void()
+
+  gv + geom_polygonraster(position=position_lineartrans(shear=[0.2, 0.2])) + coord_fixed()
+  gv + geom_polygonraster(position=position_lineartrans(angle=45)) + coord_fixed()
+applicable_to:
+  - ggh4x.geom_polygonraster
+  - ggh4x.position_lineartrans
+typical_use_case: "A raster/heatmap grid needs a geometric distortion (shear, scale, or rotation) applied to the whole grid rather than to individual data values."

@@ -1,0 +1,19 @@
+id: ggh4x.signed_difference_ribbon
+name: "Signed difference ribbon between two series"
+description: >
+  stat_difference() draws a ribbon between ymin/ymax whose fill encodes
+  which series is larger, interpolating exact crossover points; levels=
+  names the two fill categories for the legend.
+code_template: |
+  from ggplot2_py import ggplot, aes
+  from ggh4x import stat_difference
+
+  ggplot(economics, aes(x="date")) + stat_difference(
+      aes(ymin="psavert", ymax="uempmed"), levels=["More uempmed", "More psavert"], alpha=0.8
+  )
+
+  # The crossover interpolation is clearest on small data.
+  ggplot(dummy, aes(x="x", ymin="ymin", ymax="ymax")) + stat_difference()
+applicable_to:
+  - ggh4x.stat_difference
+typical_use_case: "Two time series (or two bounds of an interval) should be visually compared, with the region where one exceeds the other shaded distinctly."

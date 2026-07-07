@@ -1,0 +1,69 @@
+id: ggh4x.geom_pointpath
+import_path: ggh4x.geom_pointpath.geom_pointpath
+kind: function
+signature: "def geom_pointpath(mapping=None, data=None, stat='identity', position='identity', na_rm=False, show_legend=None, arrow=None, inherit_aes=True, **kwargs)"
+purpose: "Scatterplot with points connected by gapped line segments in data order."
+description: >
+  A base-R `type="b"`-style layer: draws points plus an interrupted
+  ("gapped") path connecting consecutive points sharing the same `group`,
+  with points drawn on top. The gap radius is sized in absolute units (via
+  the `mult` aesthetic, combined with `size`/`stroke`) so it does not deform
+  with aspect ratio or device size. Under non-linear coords (e.g.
+  `coord_polar`) the gapped segments are drawn via a chain-aware grob
+  variant instead of straight segments.
+parameters:
+  - name: mapping
+    type: Mapping
+    required: false
+    default: "None"
+    description: "aes() mapping; expects x, y, group."
+  - name: data
+    type: Any
+    required: false
+    default: "None"
+    description: "Layer data or callable."
+  - name: stat
+    type: str
+    required: false
+    default: "'identity'"
+    description: "Stat used to transform the data."
+  - name: position
+    type: str
+    required: false
+    default: "'identity'"
+    description: "Position adjustment."
+  - name: na_rm
+    type: bool
+    required: false
+    default: "False"
+    description: "Remove NA silently when True."
+  - name: show_legend
+    type: Any
+    required: false
+    default: "None"
+    description: "Whether to show the layer in the legend."
+  - name: arrow
+    type: Any
+    required: false
+    default: "None"
+    description: "A grid_py Arrow spec for path ends, or None."
+  - name: inherit_aes
+    type: bool
+    required: false
+    default: "True"
+    description: "Whether to inherit plot aesthetics."
+  - name: kwargs
+    type: Any
+    required: false
+    description: "Extra aesthetics/params, e.g. linesize, mult."
+mutates: "execution_class=pure_function; no in-place mutation; returns_kind=new_object"
+returns: "A ggplot2_py Layer backed by GeomPointPath."
+requires: []
+writes: []
+examples:
+  - "geom_pointpath()"
+  - "geom_pointpath(linesize=2, size=2, mult=1)"
+failure_fixes: []
+related:
+  - ggh4x.GeomPointPath
+  - ggh4x.GeomPointpath

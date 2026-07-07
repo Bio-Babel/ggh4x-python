@@ -1,0 +1,26 @@
+id: ggh4x.PositionLinearTrans
+import_path: ggh4x.position_lineartrans.PositionLinearTrans
+kind: class
+signature: "def __init__(self, **kwargs)"
+purpose: "Position adjustment class applying a 2x2 linear transform to a layer's x/y columns."
+description: >
+  Class attributes `scale=(1,1)`, `shear=(0,0)`, `angle=0`, `M=None`; the
+  constructor sets each supplied keyword directly via `setattr`. Not
+  usually instantiated directly by users — built via
+  `position_lineartrans()`. `setup_data` returns its input `data` unchanged
+  (identity passthrough, bypassing the base required-aes check);
+  `compute_layer` copies the data and overwrites only the `x`/`y` columns
+  with `xy @ M.T`, leaving all other columns untouched.
+parameters:
+  - name: kwargs
+    type: Any
+    required: false
+    description: "scale, shear, angle, M — set verbatim as instance attributes."
+mutates: "execution_class=pure_function; compute_layer copies data before overwriting x/y; returns_kind=new_object"
+returns: "N/A (constructor); compute_layer returns a transformed copy of the layer data."
+requires: []
+writes: []
+examples: []
+failure_fixes: []
+related:
+  - ggh4x.position_lineartrans

@@ -1,0 +1,22 @@
+id: ggh4x.margin_rug_annotations
+name: "Ranged rug annotations in the plot margins"
+description: >
+  geom_tilemargin()/geom_rectmargin() draw ranged rug-style bands in the
+  plot margins (sides= selects which margins), parameterised by centre
+  x/y + width/height (tilemargin) or by xmin/xmax/ymin/ymax (rectmargin);
+  length= must be a grid_py.Unit when supplied.
+code_template: |
+  from ggplot2_py import ggplot, aes, geom_raster, coord_fixed
+  from ggh4x import geom_tilemargin
+
+  gh = (
+      ggplot(iris_df, aes("id", "id"))
+      + geom_tilemargin(aes(species="Species"))
+      + geom_raster(aes("x", "y", cor="correlation"), data=corr_df)
+      + coord_fixed()
+  )
+applicable_to:
+  - ggh4x.geom_tilemargin
+  - ggh4x.geom_rectmargin
+anti_pattern_paired: ggh4x.margin_length_not_unit
+typical_use_case: "A categorical grouping (e.g. row/column species) needs a colour-coded band drawn in the plot margin alongside a raster/heatmap."

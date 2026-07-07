@@ -1,0 +1,56 @@
+id: ggh4x.scale_x_manual
+import_path: ggh4x.multiscale.scale_x_manual
+kind: function
+signature: "def scale_x_manual(values, c_limits=None, position='bottom', **kwargs) -> ScaleManualPosition"
+purpose: "A hybrid discrete/continuous x position scale: discrete data placed at arbitrary continuous coordinates."
+description: >
+  `values` is a numeric vector (optionally named via dict), or a callable
+  `limits -> numeric` (e.g. `sep_discrete()`); values must be numeric, and
+  training against more discrete levels than supplied values raises.
+  `c_limits` sets the continuous axis limits directly (length-2, with
+  `NaN` entries falling back to the value range); `None` uses the value
+  range. Unlike `scale_*_multi`/`scale_listed`, this is a standalone
+  position scale added the ordinary ggplot2 way (last-scale-wins) — it does
+  not participate in the `MultiScale` `+`-merge mechanism.
+parameters:
+  - name: values
+    type: Any
+    required: true
+    description: "Numeric vector, optionally named dict, or a callable limits->numeric (e.g. sep_discrete())."
+  - name: c_limits
+    type: Any
+    required: false
+    default: "None"
+    description: "Length-2 continuous limits; NaN falls back to the value range; None uses the value range."
+  - name: position
+    type: str
+    required: false
+    default: "'bottom'"
+    description: "Axis position."
+  - name: kwargs
+    type: Any
+    required: false
+    description: "Forwarded to ggplot2_py.discrete_scale."
+mutates: "execution_class=pure_function; no in-place mutation; returns_kind=new_object"
+returns: "A ScaleManualPosition targeting x/xmin/xmax/xend."
+requires: []
+writes: []
+examples:
+  - "scale_x_manual(values=[1, 2, 4])"
+  - "scale_x_manual(values=sep_discrete())"
+failure_fixes:
+  - when: "values contains non-numeric entries."
+    suggest:
+      - "Pass values as a numeric vector or a callable returning numeric positions."
+    explanation: "scale_x_manual(values=['a','b','c']) raises TypeError via cli_abort ('must be `numeric`') (test_non_numeric_values_raises)."
+  - when: "c_limits has a length other than 2."
+    suggest:
+      - "Pass c_limits as None or a length-2 numeric sequence."
+    explanation: "scale_x_manual(c_limits=[1,2,3]) raises ValueError ('must either be `None` or a `numeric` vector of length 2') (test_c_limits_wrong_length_raises)."
+  - when: "Fewer values are supplied than there are distinct discrete levels."
+    suggest:
+      - "Supply at least as many values as there are distinct discrete levels in the data."
+    explanation: "Training with values=[1,2] against 3 discrete levels raises ValueError ('Insufficient values in manual scale. 3 needed but 2 provided.') at train() time (test_insufficient_values_raises_on_map)."
+related:
+  - ggh4x.scale_y_manual
+  - ggh4x.sep_discrete

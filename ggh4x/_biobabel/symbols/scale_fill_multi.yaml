@@ -1,0 +1,66 @@
+id: ggh4x.scale_fill_multi
+import_path: ggh4x.multiscale.scale_fill_multi
+kind: function
+signature: "def scale_fill_multi(*, colours=MISSING, values=None, na_value='transparent', guide='colourbar', aesthetics='fill', colors=MISSING, **kwargs) -> MultiScale"
+purpose: "Map multiple non-standard fill aesthetics (e.g. fill1, fill2) each to its own gradient scale."
+description: >
+  Bundles one `continuous_scale` per name in `aesthetics` into a
+  `MultiScale`. `colours`/`colors` (American alias) may be a list of
+  per-aesthetic colour lists (e.g. `[["white","red"],["black","blue"]]`) or
+  a single vector/scalar broadcast to every aesthetic; default
+  `["white","black"]`. At `+`-time (see the `_multiscale_add` registration
+  on `update_ggplot`), each affected layer's geom is cloned so its
+  standard `fill` aesthetic is exposed under the layer-specific
+  non-standard name, letting several "fill-like" scales coexist on one
+  plot without the usual ggplot2 last-scale-wins collision, since each
+  scale targets a distinct aesthetic name under the hood.
+parameters:
+  - name: colours
+    type: Any
+    required: false
+    default: "['white', 'black']"
+    description: "Gradient colours; a list is per-aesthetic, anything else is broadcast to every aesthetic."
+  - name: values
+    type: Any
+    required: false
+    default: "None"
+    description: "Gradient value positions, per-aesthetic list or broadcast."
+  - name: na_value
+    type: str
+    required: false
+    default: "'transparent'"
+    description: "Colour for missing values, per-aesthetic or broadcast."
+  - name: guide
+    type: Any
+    required: false
+    default: "'colourbar'"
+    description: "'colourbar'/'colorbar'/'legend' or Guide instance(s), per-aesthetic or broadcast."
+  - name: aesthetics
+    type: Any
+    required: false
+    default: "'fill'"
+    description: "The non-standard aesthetic name(s) to create, e.g. ['fill1','fill2']."
+  - name: colors
+    type: Any
+    required: false
+    default: "None"
+    description: "American-spelling alias for colours."
+  - name: kwargs
+    type: Any
+    required: false
+    description: "Extra args forwarded to continuous_scale, per-aesthetic-listable."
+mutates: "execution_class=pure_function; construction is pure; the +-time handler mutates plot.scales/plot.layers when the MultiScale is added; returns_kind=new_object"
+returns: "A MultiScale container consumed by the ggplot + operator."
+requires: []
+writes: []
+examples:
+  - "g + scale_fill_multi(aesthetics=['fill1', 'fill2', 'fill3'])"
+failure_fixes:
+  - when: "guide is a string other than 'colourbar'/'colorbar'/'legend' and not a Guide instance."
+    suggest:
+      - "Pass guide as 'colourbar', 'colorbar', 'legend', or a Guide instance."
+    explanation: "scale_fill_multi(guide='not_a_guide') raises ValueError via cli_abort('... Choose a legend or colourbar guide.') (test_invalid_guide_raises)."
+related:
+  - ggh4x.scale_colour_multi
+  - ggh4x.scale_color_multi
+  - ggh4x.scale_listed

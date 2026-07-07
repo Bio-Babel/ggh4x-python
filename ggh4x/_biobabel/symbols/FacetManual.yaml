@@ -1,0 +1,26 @@
+id: ggh4x.FacetManual
+import_path: ggh4x.facet_manual.FacetManual
+kind: class
+signature: ''
+purpose: "ggproto Facet backing facet_manual(); places panels per a user design instead of an auto-computed grid/wrap."
+description: >
+  Not directly instantiated by users — built directly inside
+  `facet_manual()` (always exactly `FacetManual`, no `super_=` indirection
+  like the grid/wrap families). Subclass of `ggh4x.facet_wrap2.FacetWrap2`.
+  Produces a *span* layout (`.TOP/.RIGHT/.BOTTOM/.LEFT`, one row per unique
+  panel id) rather than a `ROW/COL` grid, then weaves per-panel axes and
+  strips honoring those spans — the mechanism letting panels occupy
+  arbitrary rectangles per the `design=` argument. Overrides
+  `compute_layout`, `map_data`, `setup_aspect_ratio`, `setup_axes`,
+  `attach_axes`, and `draw_panels`; `setup_panel_table` and `finish_panels`
+  are inherited unmodified from `FacetWrap2`.
+parameters: []
+mutates: "execution_class=builder; internal drawing methods build new Gtables/DataFrames rather than mutating the plot; returns_kind=new_object"
+returns: "N/A (class); draw_panels returns a Gtable with panels placed per the design's span layout."
+requires: []
+writes: []
+examples: []
+failure_fixes: []
+related:
+  - ggh4x.facet_manual
+  - ggh4x.FacetWrap2

@@ -1,0 +1,45 @@
+id: ggh4x.facetted_pos_scales
+import_path: ggh4x.panel_scales.facetted_pos_scales
+kind: function
+signature: "def facetted_pos_scales(x=None, y=None) -> FacettedPosScales"
+purpose: "Build a deferred container of per-panel x/y position scales to splice into a faceted plot at +-time."
+description: >
+  `x`/`y` are each a list (a non-list value is auto-wrapped as `[x]`); each
+  element is a position `Scale` carrying the matching aesthetic, `None`
+  (use the default scale), or — if *all* elements are — a
+  `(predicate, scale)` pair. Requires the target axis to already be free
+  (`scales="free"`/`"free_x"`/`"free_y"` on the facet); adding scales on a
+  non-free axis emits a warning. When added to a plot whose facet is
+  already a `FreeScaled*` wrapper, updates its scale lists in place instead
+  of re-wrapping. Adding an all-`None` container is a no-op that preserves
+  facet identity.
+parameters:
+  - name: x
+    type: Any
+    required: false
+    default: "None"
+    description: "Per-panel x-scale list (or a single scale/None auto-wrapped); each element a Scale, None, or (predicate, scale) pair."
+  - name: y
+    type: Any
+    required: false
+    default: "None"
+    description: "Per-panel y-scale list, same shape rules as x."
+mutates: "execution_class=pure_function; the +-time handler clones plot.facet into a FreeScaled<FacetClass> wrapper, or mutates an existing FreeScaled* facet's scale lists in place; returns_kind=new_object"
+returns: "A FacettedPosScales container consumed by the ggplot + operator."
+requires: []
+writes: []
+examples:
+  - "p + facet_grid2(cols=vars('drv'), scales='free_x') + facetted_pos_scales(x=[None, scale_x_continuous(limits=[0, 3])])"
+failure_fixes:
+  - when: "An element of x/y is neither a matching-aesthetic Scale, None, nor part of an all-pairs (predicate, scale) list."
+    suggest:
+      - "Ensure every x/y list element is a position Scale for that aesthetic, None, or a (predicate, scale) tuple."
+    explanation: "facetted_pos_scales(y=[scale_y_continuous(), 'notascale']) raises ValueError (test_facetted_pos_scales_constructor_validates)."
+  - when: "facetted_pos_scales() is added to a facet whose corresponding axis is not free."
+    suggest:
+      - "Set scales='free'/'free_x'/'free_y' on the facet before adding facetted_pos_scales for that axis."
+    explanation: "The +-time handler emits a cli_warn when the facet's params['free'][axis] is False."
+related:
+  - ggh4x.scale_x_facet
+  - ggh4x.scale_y_facet
+  - ggh4x.at_panel

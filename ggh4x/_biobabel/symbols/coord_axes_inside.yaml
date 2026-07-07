@@ -1,0 +1,73 @@
+id: ggh4x.coord_axes_inside
+import_path: ggh4x.coord_axes_inside.coord_axes_inside
+kind: function
+signature: "def coord_axes_inside(xlim=None, ylim=None, xintercept=0, yintercept=0, labels_inside=False, ratio=None, expand=True, default=False, clip='on') -> CoordAxesInside"
+purpose: "Construct a Cartesian coordinate system that draws its axes at interior positions instead of the panel gutters."
+description: >
+  `xintercept`/`yintercept` place the axes inside the panel at the given
+  data coordinates (snapped to the nearest limit if outside the visible
+  range); works best when the data is pre-centered (e.g. mean-subtracted)
+  so the interior origin lands meaningfully in view. Requires
+  `theme(axis_line=element_line())` to actually render the moved axis
+  lines. `labels_inside` controls whether tick labels sit inside
+  (`True`/`"both"`) or outside (`False`/`"none"`) the panel, or per-axis
+  (`"x"`/`"y"`).
+parameters:
+  - name: xlim
+    type: Any
+    required: false
+    default: "None"
+    description: "Zoom limits for x; does not filter data."
+  - name: ylim
+    type: Any
+    required: false
+    default: "None"
+    description: "Zoom limits for y; does not filter data."
+  - name: xintercept
+    type: float
+    required: false
+    default: "0"
+    description: "Data-coordinate x position where the y axis is drawn."
+  - name: yintercept
+    type: float
+    required: false
+    default: "0"
+    description: "Data-coordinate y position where the x axis is drawn."
+  - name: labels_inside
+    type: Any
+    required: false
+    default: "False"
+    description: "bool or one of 'x','y','none','both'; True normalizes to 'both', False to 'none'."
+  - name: ratio
+    type: float
+    required: false
+    default: "None"
+    description: "Fixed y/x aspect ratio; None leaves the aspect free."
+  - name: expand
+    type: bool
+    required: false
+    default: "True"
+    description: "Whether to apply the usual axis expansion."
+  - name: default
+    type: bool
+    required: false
+    default: "False"
+    description: "Marks this as the default coordinate system (ggplot2 internal flag)."
+  - name: clip
+    type: str
+    required: false
+    default: "'on'"
+    description: "Clipping behavior for drawing outside the panel."
+mutates: "execution_class=pure_function; no in-place mutation; returns_kind=new_object"
+returns: "A CoordAxesInside instance, added to a ggplot via +."
+requires: []
+writes: []
+examples:
+  - "ggplot(df_centered, aes('dx', 'dy')) + geom_point() + theme(axis_line=element_line()) + coord_axes_inside()"
+failure_fixes:
+  - when: "labels_inside is passed a value outside {'x','y','none','both'} (or bool)."
+    suggest:
+      - "Use True, False, 'x', 'y', 'none', or 'both' for labels_inside."
+    explanation: "coord_axes_inside(labels_inside='diagonal') raises ValueError matching 'labels_inside' (test_coord_labels_inside_bad_value)."
+related:
+  - ggh4x.CoordAxesInside

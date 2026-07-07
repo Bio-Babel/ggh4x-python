@@ -1,0 +1,21 @@
+id: ggh4x.per_panel_position_scale
+name: "Overriding one panel's scale with a predicate"
+description: >
+  scale_x_facet()/scale_y_facet() (and the more general
+  facetted_pos_scales()) pair a panel predicate — a callable on the panel
+  layout DataFrame, or a DataFrame.eval-compatible string — with a scale to
+  apply only to matching panels. Requires the target axis to already be
+  free on the facet.
+code_template: |
+  from ggplot2_py import ggplot, aes, geom_point, vars
+  from ggh4x import facet_grid2, scale_x_facet
+
+  p = ggplot(mpg, aes("displ", "hwy")) + geom_point()
+
+  p + facet_grid2(cols=vars("drv"), scales="free_x") + scale_x_facet(
+      lambda d: d["COL"] == 1, breaks=[2, 4, 6]
+  )
+applicable_to:
+  - ggh4x.facetted_pos_scales
+  - ggh4x.panel_scale_and_size_ordering
+typical_use_case: "One or a few panels of a free-scaled facet need custom breaks/limits/labels that the rest of the panels should not share."

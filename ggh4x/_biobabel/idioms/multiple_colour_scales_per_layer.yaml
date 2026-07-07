@@ -1,0 +1,27 @@
+id: ggh4x.multiple_colour_scales_per_layer
+name: "Multiple independent colour scales on one plot"
+description: >
+  Map each layer's colour through its own uniquely-named non-standard
+  aesthetic (not "colour"/"fill"), then bundle one gradient per aesthetic
+  name into a single scale_colour_multi()/scale_fill_multi() call — see the
+  multiscale_aesthetic_rewrite concept for why this does not collide like a
+  normal second colour scale would.
+code_template: |
+  from ggplot2_py import ggplot, aes, geom_point, facet_wrap
+  from ggh4x import scale_colour_multi
+
+  g = (
+      ggplot(iris, aes("Sepal.Width", "Sepal.Length"))
+      + geom_point(aes(swidth="Sepal.Width"), data=setosa)
+      + geom_point(aes(pleng="Petal.Length"), data=versi)
+      + geom_point(aes(pwidth="Petal.Width"), data=virg)
+      + facet_wrap("Species", scales="free_x")
+  )
+  g + scale_colour_multi(
+      aesthetics=["swidth", "pleng", "pwidth"],
+      colours=[["black", "green"], ["gray", "red"], ["white", "blue"]],
+  )
+applicable_to:
+  - ggh4x.scale_colour_multi
+  - ggh4x.multiscale_aesthetic_rewrite
+typical_use_case: "Several layers (often faceted subsets of the same data) each need their own independent colour gradient on one plot."

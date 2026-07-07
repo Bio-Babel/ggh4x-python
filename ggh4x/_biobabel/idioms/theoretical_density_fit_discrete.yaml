@@ -1,0 +1,16 @@
+id: ggh4x.theoretical_density_fit_discrete
+name: "Fitting a discrete distribution with point markers"
+description: >
+  Discrete distributions (e.g. negative-binomial, binomial) require
+  integer input and should render with geom="point" rather than
+  stat_theodensity()'s default "line" geom, since a line implies a
+  continuity discrete probability masses do not have.
+code_template: |
+  from ggplot2_py import ggplot, aes
+  from ggh4x import stat_theodensity
+
+  ggplot(ndf, aes(x="x", color="group")) + stat_theodensity(distri="nbinom", geom="point")
+applicable_to:
+  - ggh4x.stat_theodensity
+anti_pattern_paired: ggh4x.theodensity_discrete_default_line
+typical_use_case: "Fitting a discrete count distribution (Poisson, binomial, negative-binomial) to integer data."

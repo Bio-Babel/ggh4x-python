@@ -1,0 +1,33 @@
+id: ggh4x.sep_discrete
+import_path: ggh4x.conveniences.sep_discrete
+kind: function
+signature: "def sep_discrete(sep='.', inv=False)"
+purpose: "Return a function mapping separator-delimited discrete labels to numeric axis positions."
+description: >
+  Factory returning a closure `_positions(limits)` that lays out
+  hierarchical/grouped discrete labels (e.g. `"0.4"`, `"1.4"`, `"1.5"`) onto
+  numeric positions by splitting each label on `sep` and scoring the
+  resulting components. `inv=True` reverses the column order of split
+  components before scoring, inverting group layering. Intended for use as
+  a manual-scale `values=` callable, e.g. with `scale_x_manual`.
+parameters:
+  - name: sep
+    type: str
+    required: false
+    default: "'.'"
+    description: "Literal (non-regex) separator used to split each label into components."
+  - name: inv
+    type: bool
+    required: false
+    default: "False"
+    description: "Reverse the column order of split components before scoring."
+mutates: "execution_class=pure_function; no in-place mutation; returns_kind=new_object"
+returns: "A callable `_positions(limits) -> numpy.ndarray` mapping a sequence of labels to numeric positions."
+requires: []
+writes: []
+examples:
+  - "scale_x_manual(values=sep_discrete())"
+failure_fixes: []
+related:
+  - ggh4x.scale_x_manual
+  - ggh4x.scale_y_manual

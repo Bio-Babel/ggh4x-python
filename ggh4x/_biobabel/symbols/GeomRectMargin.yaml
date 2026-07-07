@@ -1,0 +1,26 @@
+id: ggh4x.GeomRectMargin
+import_path: ggh4x.geom_rectrug.GeomRectMargin
+kind: class
+signature: "class GeomRectMargin(GeomRug)"
+purpose: "ggproto Geom drawing thin rectangle bands along requested plot margins from xmin/xmax and/or ymin/ymax."
+description: >
+  `optional_aes = ("x","y","xmin","xmax","ymin","ymax")`. Not directly
+  instantiated by users; built and configured via `geom_rectmargin()`.
+  Completely replaces the inherited `GeomRug`'s `draw_panel`/`default_aes`/
+  `draw_key`, keeping only its missing-value/setup plumbing. `draw_panel`
+  raises via `cli_abort` (TypeError) if `length` is supplied but is not a
+  grid unit object.
+parameters: []
+mutates: "execution_class=pure_function; draw_panel builds new coordinate frames, no in-place mutation; returns_kind=new_object"
+returns: "N/A (class); draw_panel returns a GTree of per-side rect grobs."
+requires: []
+writes: []
+examples: []
+failure_fixes:
+  - when: "length is given but is not a grid_py.Unit object."
+    suggest:
+      - "Pass length as a grid_py Unit, e.g. Unit(0.03, 'npc')."
+    explanation: "draw_panel raises TypeError via cli_abort('The `length` argument must be a `unit` object.') (test_geomrectmargin_length_must_be_unit)."
+related:
+  - ggh4x.geom_rectmargin
+  - ggh4x.GeomTileMargin

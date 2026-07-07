@@ -1,0 +1,18 @@
+id: ggh4x.grid_facet_independent_scales
+name: "Grid facet with independent per-row/column scales"
+description: >
+  facet_grid2()'s independent= lets scales vary within a row or column
+  (not just be free between row/col groups like plain facet_grid), and
+  render_empty=False hides row-by-column intersections with no data.
+code_template: |
+  from ggplot2_py import ggplot, aes, geom_point, vars
+  from ggh4x import facet_grid2
+
+  p = ggplot(mpg, aes("displ", "hwy")) + geom_point()
+
+  p + facet_grid2(vars("year"), vars("drv"), scales="free_x", independent="x")
+
+  p + facet_grid2(vars("drv"), vars("cyl"), render_empty=False)
+applicable_to:
+  - ggh4x.facet_grid2
+typical_use_case: "Panels in the same row/column of a grid facet need genuinely different x or y ranges, not just a range shared per row/column."

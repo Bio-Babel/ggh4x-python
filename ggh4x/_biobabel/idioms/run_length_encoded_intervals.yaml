@@ -1,0 +1,15 @@
+id: ggh4x.run_length_encoded_intervals
+name: "Run-length-encoded interval rectangles"
+description: >
+  stat_rle() draws a rectangle over each run where the label aesthetic
+  keeps the same value (ordered by x); align="center" closes the gaps
+  between consecutive runs, unlike the default "none" alignment.
+code_template: |
+  from ggplot2_py import ggplot, aes, geom_point
+  from ggh4x import stat_rle
+
+  ggplot(rdf, aes(x="x", y="y")) + stat_rle(aes(label="lab"), align="center") + geom_point()
+applicable_to:
+  - ggh4x.stat_rle
+anti_pattern_paired: ggh4x.stat_rle_align_typo
+typical_use_case: "A time series or ordered sequence has runs of a constant categorical label that should be highlighted as background bands."

@@ -1,0 +1,28 @@
+id: ggh4x.StatRle
+import_path: ggh4x.stat_rle.StatRle
+kind: class
+signature: "class StatRle(Stat)"
+purpose: "ggproto Stat run-length-encoding the label aesthetic into per-run rectangles."
+description: >
+  `required_aes = ["x", "label"]`; `default_aes` maps xmin/xmax to
+  after_stat(start)/after_stat(end), ymin/ymax to -Inf/+Inf, and fill to
+  after_stat(runvalue); `dropped_aes = ["x", "label"]`. Auto-registered in
+  Stat._registry under both "Rle" and "rle". Not directly instantiated by
+  users; built and configured via `stat_rle()`. `compute_group` orders data
+  by `x` (stable sort) before RLE-encoding, using NA-as-equal semantics
+  distinct from base R's `rle`; consecutive NaN collapse into a single run,
+  but a non-NA value flanked by NaN on both sides forms its own separate
+  run (NaN does not bridge two equal non-NaN values).
+parameters: []
+mutates: "execution_class=pure_function; setup_params mutates and returns the same params dict object; compute_group returns a new re-sorted DataFrame; returns_kind=new_object"
+returns: "N/A (class); compute_group returns a pandas.DataFrame with columns start, end, start_id, end_id, run_id, runlength, runvalue."
+requires: []
+writes: []
+examples: []
+failure_fixes:
+  - when: "Consecutive NaN values in label are expected to form separate runs, or a non-NA value bridges two NaN runs."
+    suggest:
+      - "Remember NA-as-equal semantics: consecutive NaN collapse into one run, and a single non-NaN value flanked by NaN on both sides forms 3 separate runs, not a merge."
+    explanation: "StatRle's private _vec_unrep helper intentionally differs from base R's rle() in its NaN handling; see tests/test_stat_rle.py::test_vec_unrep_na_between_equal_values_splits."
+related:
+  - ggh4x.stat_rle

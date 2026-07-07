@@ -1,0 +1,22 @@
+id: ggh4x.nested_wrap_facet_strip_side
+name: "Nested wrap facet with strips moved to a side"
+description: >
+  facet_nested_wrap() combines wrap layout, direction control (dir=), and
+  strip_position=; theme(strip_placement="outside") keeps side strips
+  outside the axis rather than overlapping it.
+code_template: |
+  from ggplot2_py import ggplot, aes, geom_point, vars, theme
+  from ggh4x import facet_nested_wrap
+
+  p = ggplot(mpg, aes("displ", "hwy")) + geom_point()
+
+  (
+      p
+      + facet_nested_wrap(
+          vars("cyl", "drv"), dir="v", strip_position="left", axes="all", remove_labels="x"
+      )
+      + theme(strip_placement="outside")
+  )
+applicable_to:
+  - ggh4x.facet_nested_wrap
+typical_use_case: "A wrap-layout nested facet needs its hierarchical strips on the left/right instead of the default top."

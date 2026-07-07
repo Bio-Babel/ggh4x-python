@@ -1,0 +1,61 @@
+id: ggh4x.force_panelsizes
+import_path: ggh4x.panel_scales.force_panelsizes
+kind: function
+signature: "def force_panelsizes(rows=None, cols=None, respect=None, total_width=None, total_height=None) -> ForcedSize"
+purpose: "Build a deferred container of forced panel row-heights / column-widths to apply to a faceted plot's gtable."
+description: >
+  `rows`/`cols` accept bare numerics (coerced to relative `Unit(..., 'null')`
+  ratios) or explicit `grid_py.Unit`s. `total_width`/`total_height` require
+  the paired `cols`/`rows` to be relative ('null') units, and must
+  themselves be absolute units (cm/mm/inches/points/bigpts). Must be added
+  *after* the facet call in the `+` chain: the `+`-time handler clones
+  whatever facet class is currently on `plot.facet` into a
+  `Forced<FacetClassName>` wrapper, closing over that class at add-time —
+  adding `force_panelsizes()` before the facet, or replacing the facet
+  afterward, does not get wrapped. Adding an all-`None` container is a
+  no-op that preserves facet identity.
+parameters:
+  - name: rows
+    type: Any
+    required: false
+    default: "None"
+    description: "Numeric (coerced to relative 'null' units) or grid_py.Unit row heights."
+  - name: cols
+    type: Any
+    required: false
+    default: "None"
+    description: "Numeric (coerced to relative 'null' units) or grid_py.Unit column widths."
+  - name: respect
+    type: bool
+    required: false
+    default: "None"
+    description: "True makes null widths/heights proportional to each other."
+  - name: total_width
+    type: Any
+    required: false
+    default: "None"
+    description: "Absolute grid_py.Unit total width; requires cols to be relative ('null')."
+  - name: total_height
+    type: Any
+    required: false
+    default: "None"
+    description: "Absolute grid_py.Unit total height; requires rows to be relative ('null')."
+mutates: "execution_class=pure_function; the +-time handler clones plot.facet into a Forced<FacetClassName> wrapper with an overridden draw_panels; returns_kind=new_object"
+returns: "A ForcedSize container consumed by the ggplot + operator."
+requires: []
+writes: []
+examples:
+  - "p + facet_grid2(cols=vars('drv')) + force_panelsizes(cols=[1, 0.3, 0.5], rows=[1], respect=True)"
+failure_fixes:
+  - when: "total_width is given while cols is an absolute (non-relative) unit."
+    suggest:
+      - "Make cols a relative ('null') unit or plain numeric ratio when supplying total_width (and symmetrically for total_height/rows)."
+    explanation: "force_panelsizes(cols=Unit([2,1],'cm'), total_width=Unit(10,'cm')) raises ValueError (test_force_panelsizes_total_width_requires_relative_cols)."
+  - when: "total_width/total_height is given but is not a grid_py.Unit."
+    suggest:
+      - "Pass total_width/total_height as a grid_py Unit in an absolute unit type."
+    explanation: "force_panelsizes(total_width=10) raises ValueError (test_force_panelsizes_total_width_must_be_unit)."
+related:
+  - ggh4x.facet_grid2
+  - ggh4x.facet_wrap2
+  - ggh4x.save_plot

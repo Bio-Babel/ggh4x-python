@@ -1,0 +1,21 @@
+id: ggh4x.centroid_and_midpoint_labels
+name: "Comparing group centroid vs range-midpoint"
+description: >
+  stat_centroid() (NaN-aware mean of x and y) and stat_midpoint() (mean of
+  each axis's min/max range) are convenience wrappers over stat_funxy();
+  layering both on one plot compares where a group's data actually centers
+  vs. the midpoint of its spread.
+code_template: |
+  from ggplot2_py import ggplot, aes, geom_point
+  from ggh4x import stat_centroid, stat_midpoint
+
+  (
+      ggplot(faithful, aes(x="waiting", y="eruptions", group="group"))
+      + geom_point()
+      + stat_centroid(geom="point", color="dodgerblue", size=4)
+      + stat_midpoint(geom="point", color="limegreen", size=4)
+  )
+applicable_to:
+  - ggh4x.stat_centroid
+  - ggh4x.stat_midpoint
+typical_use_case: "Each group in a scatterplot should be labeled at both its mean position and its range midpoint, to visually contrast skew."

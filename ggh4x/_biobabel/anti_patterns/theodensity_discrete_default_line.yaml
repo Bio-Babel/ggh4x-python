@@ -1,0 +1,15 @@
+id: ggh4x.theodensity_discrete_default_line
+name: "stat_theodensity() fitting a discrete distribution with the default line geom"
+detection:
+  detector_id: ggh4x.theodensity_discrete_default_line
+  static_only: true
+why_bad: >
+  stat_theodensity()'s default geom is "line", which implies a continuity
+  that discrete probability masses (e.g. a negative-binomial or binomial
+  fit) do not have; a line drawn through discrete mass points misrepresents
+  the fit visually even though it renders without error.
+correct_pattern: ggh4x.theoretical_density_fit_discrete
+code_example_wrong: |
+  stat_theodensity(distri="nbinom")
+code_example_right: |
+  stat_theodensity(distri="nbinom", geom="point")

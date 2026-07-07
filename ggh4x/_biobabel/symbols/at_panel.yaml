@@ -1,0 +1,33 @@
+id: ggh4x.at_panel
+import_path: ggh4x.panel_scales.at_panel
+kind: function
+signature: "def at_panel(layer, expr)"
+purpose: "Clone a layer's geom so it only draws on plot panels matching a predicate."
+description: >
+  `expr` is a panel predicate: a callable `layout_df -> bool-array`, or a
+  string evaluated via `pandas.DataFrame.eval(expr, engine='python')`
+  against the panel layout (columns `PANEL`/`ROW`/`COL`/`SCALE_*` plus facet
+  vars). If `layer` is a bare list, `at_panel` recurses over it, applying
+  itself to any `Layer` elements and passing non-`Layer` elements through
+  unchanged.
+parameters:
+  - name: layer
+    type: Any
+    required: true
+    description: "A ggplot2_py Layer, or a list containing layers."
+  - name: expr
+    type: Any
+    required: true
+    description: "A panel predicate: a callable layout_df -> bool-array, or a string evaluated with DataFrame.eval."
+mutates: "execution_class=pure_function; clones the geom and layer via ggproto(None, ...), never mutates the originals; returns_kind=new_object"
+returns: "A new Layer whose geom only draws matched panels, or a list with each Layer element so transformed."
+requires: []
+writes: []
+examples:
+  - "at_panel(annotation_layer, 'PANEL == 1')"
+failure_fixes:
+  - when: "expr is not supplied (None)."
+    suggest:
+      - "Pass a predicate string or callable as expr."
+    explanation: "at_panel(layer, None) raises ValueError via cli_abort on missing expr (test_at_panel_missing_expr_raises)."
+related: []

@@ -1,0 +1,76 @@
+id: ggh4x.geom_polygonraster
+import_path: ggh4x.geom_polygonraster.geom_polygonraster
+kind: function
+signature: "def geom_polygonraster(mapping=None, data=None, stat='identity', position=None, hjust=0.5, vjust=0.5, na_rm=False, show_legend=None, inherit_aes=True, **kwargs)"
+purpose: "Re-parametrise equal-size raster pixels as four-vertex polygons so they can be transformed by non-linear coords or positions."
+description: >
+  Requires `x`, `y` (pixel centres) and `fill`. Less efficient than a true
+  raster, but each pixel is drawn as an explicit polygon so it can be
+  warped by `coord_polar()` or by `position_lineartrans()` (its default
+  position, substituted lazily when `position=None`). `hjust`/`vjust`
+  (pixel anchor justification) must be numeric.
+parameters:
+  - name: mapping
+    type: Mapping
+    required: false
+    default: "None"
+    description: "aes() mapping; requires x, y, fill."
+  - name: data
+    type: Any
+    required: false
+    default: "None"
+    description: "Layer data or callable."
+  - name: stat
+    type: str
+    required: false
+    default: "'identity'"
+    description: "Stat used to transform the data."
+  - name: position
+    type: Any
+    required: false
+    default: "None"
+    description: "Position adjustment; None is replaced by position_lineartrans()."
+  - name: hjust
+    type: float
+    required: false
+    default: "0.5"
+    description: "Horizontal pixel anchor justification; must be numeric."
+  - name: vjust
+    type: float
+    required: false
+    default: "0.5"
+    description: "Vertical pixel anchor justification; must be numeric."
+  - name: na_rm
+    type: bool
+    required: false
+    default: "False"
+    description: "Remove NA silently when True."
+  - name: show_legend
+    type: Any
+    required: false
+    default: "None"
+    description: "Whether to show the layer in the legend."
+  - name: inherit_aes
+    type: bool
+    required: false
+    default: "True"
+    description: "Whether to inherit plot aesthetics."
+  - name: kwargs
+    type: Any
+    required: false
+    description: "Extra aesthetics/params."
+mutates: "execution_class=pure_function; validates hjust/vjust eagerly (raises before construction); returns_kind=new_object"
+returns: "A ggplot2_py Layer backed by GeomPolygonRaster."
+requires: []
+writes: []
+examples:
+  - "geom_polygonraster(position=position_lineartrans(shear=[0.2, 0.2]))"
+  - "geom_polygonraster(position=position_lineartrans(angle=45))"
+failure_fixes:
+  - when: "hjust or vjust is not numeric."
+    suggest:
+      - "Pass hjust/vjust as a plain int or float."
+    explanation: "geom_polygonraster(hjust='x') raises TypeError (test_geompolygonraster_constructor_validates_hjust)."
+related:
+  - ggh4x.GeomPolygonRaster
+  - ggh4x.position_lineartrans

@@ -1,0 +1,30 @@
+id: ggh4x.strip_per_strip_theming
+name: "Per-strip and per-layer strip theming"
+description: >
+  strip_themed() (and its subclass strip_nested()) let strip.text/
+  strip.background differ per label or per facet-variable layer, built
+  concisely via elem_list_rect()/elem_list_text(); by_layer_x=/by_layer_y=
+  switch between per-label and per-layer element mapping. strip_vanilla()
+  is the plain baseline with only clip=/size= to control.
+code_template: |
+  from ggplot2_py import ggplot, aes, geom_point, vars
+  from ggh4x import facet_grid2, strip_themed, elem_list_rect, elem_list_text
+
+  p = ggplot(mpg, aes("displ", "hwy")) + geom_point()
+
+  p + facet_grid2(
+      vars("class"),
+      vars("drv", "year"),
+      strip=strip_themed(
+          background_x=elem_list_rect(fill=["limegreen", "dodgerblue"]),
+          text_x=elem_list_text(colour=["dodgerblue", "limegreen"]),
+          by_layer_x=True,
+          background_y=elem_list_rect(fill=["gold", "tomato", "deepskyblue"]),
+          text_y=elem_list_text(angle=[0, 90]),
+          by_layer_y=False,
+      ),
+  )
+applicable_to:
+  - ggh4x.strip_themed
+  - ggh4x.strip_protocol
+typical_use_case: "Different strip labels (or different faceting-variable layers) need visually distinct backgrounds/text, not one uniform strip theme."

@@ -1,0 +1,92 @@
+id: ggh4x.stat_funxy
+import_path: ggh4x.stat_funxy.stat_funxy
+kind: function
+signature: "def stat_funxy(mapping=None, data=None, geom='point', position='identity', *, funx=_identity, funy=_identity, argx=None, argy=None, crop_other=True, show_legend=None, inherit_aes=True, **kwargs)"
+purpose: "Apply user-supplied summary functions to the x and y position aesthetics per group."
+description: >
+  Requires `x` and `y` aesthetics. Calls `funx(x_values, **argx)` and
+  `funy(y_values, **argy)` per group and reassembles a frame recycling other
+  columns to match. `crop_other=True` (default) crops other columns to the
+  length of the funx/funy results before recycling; set `False` when
+  `funx`/`funy` return length-one summaries meant to be recycled across all
+  original rows. `stat_centroid` and `stat_midpoint` are convenience
+  wrappers built on this function.
+parameters:
+  - name: mapping
+    type: Mapping
+    required: false
+    default: "None"
+    description: "aes() mapping; requires x and y."
+  - name: data
+    type: Any
+    required: false
+    default: "None"
+    description: "Layer data or callable."
+  - name: geom
+    type: str
+    required: false
+    default: "'point'"
+    description: "Geometry used to render the layer."
+  - name: position
+    type: str
+    required: false
+    default: "'identity'"
+    description: "Position adjustment."
+  - name: funx
+    type: Callable
+    required: false
+    default: "identity"
+    description: "Function called on the group's x values plus **argx."
+  - name: funy
+    type: Callable
+    required: false
+    default: "identity"
+    description: "Function called on the group's y values plus **argy."
+  - name: argx
+    type: dict
+    required: false
+    default: "None"
+    description: "Named kwargs forwarded to funx; every key must be a non-empty string."
+  - name: argy
+    type: dict
+    required: false
+    default: "None"
+    description: "Named kwargs forwarded to funy; every key must be a non-empty string."
+  - name: crop_other
+    type: bool
+    required: false
+    default: "True"
+    description: "Crop other columns to the funx/funy result length before recycling, instead of keeping full length."
+  - name: show_legend
+    type: bool
+    required: false
+    default: "None"
+    description: "Whether to show the layer in the legend."
+  - name: inherit_aes
+    type: bool
+    required: false
+    default: "True"
+    description: "Whether to inherit plot aesthetics."
+  - name: kwargs
+    type: Any
+    required: false
+    description: "Other layer args."
+mutates: "execution_class=pure_function; eager validation (raises before construction for bad funx/funy/argx/argy); returns_kind=new_object"
+returns: "A ggplot2_py Layer backed by StatFunxy."
+requires: []
+writes: []
+examples:
+  - "stat_funxy(funx=lambda v: [float(np.min(v)), float(np.max(v))], funy=np.mean, geom='line')"
+failure_fixes:
+  - when: "funx or funy is not callable."
+    suggest:
+      - "Pass an actual callable for funx/funy, e.g. numpy.mean."
+    explanation: "stat_funxy(funx=5) raises ValueError matching 'must be a function' (test_constructor_funx_not_callable / test_constructor_funy_not_callable)."
+  - when: "argx or argy is not a dict, or contains an unnamed (empty-string) key."
+    suggest:
+      - "Pass argx/argy as a dict of named keyword arguments, e.g. {'na_rm': True}, not a list and never with an empty-string key."
+    explanation: "stat_funxy(argx=[1, 2]) raises ValueError matching 'must be lists'; stat_funxy(argx={'': 1}) raises ValueError matching 'named elements' (same check applies to argy)."
+related:
+  - ggh4x.StatFunxy
+  - ggh4x.stat_centroid
+  - ggh4x.stat_midpoint

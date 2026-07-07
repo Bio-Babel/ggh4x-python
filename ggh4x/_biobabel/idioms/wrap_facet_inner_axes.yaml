@@ -1,0 +1,20 @@
+id: ggh4x.wrap_facet_inner_axes
+name: "Wrap facet with inner axes and an exact grid"
+description: >
+  facet_wrap2() draws/purges inner axes with axes=/remove_labels=, and
+  trim_blank=False forces a literal nrow x ncol grid instead of trimming
+  blank trailing cells.
+code_template: |
+  from ggplot2_py import ggplot, aes, geom_point, vars
+  from ggh4x import facet_wrap2
+
+  p = ggplot(mpg, aes("displ", "hwy")) + geom_point()
+
+  # Draw all inner axes, but remove inner x-axis labels (keep ticks).
+  p + facet_wrap2(vars("class"), axes="all", remove_labels="x")
+
+  # Force an exact nrow/ncol grid (do not trim blank cells).
+  p + facet_wrap2(vars("class"), nrow=4, ncol=4, trim_blank=False)
+applicable_to:
+  - ggh4x.facet_wrap2
+typical_use_case: "A wrap facet needs shared inner axes visible, or a fixed grid shape regardless of empty trailing cells."

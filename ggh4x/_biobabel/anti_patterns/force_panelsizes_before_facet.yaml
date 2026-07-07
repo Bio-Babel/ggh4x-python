@@ -1,0 +1,16 @@
+id: ggh4x.force_panelsizes_before_facet
+name: "force_panelsizes() added before the facet"
+detection:
+  detector_id: ggh4x.force_panelsizes_before_facet
+  static_only: true
+why_bad: >
+  force_panelsizes()'s +-time handler wraps whatever facet class is
+  currently installed on plot.facet into a Forced<FacetClassName> subclass,
+  closing over that class at add-time. If force_panelsizes() is added
+  before the facet in the + chain, there is no facet yet to wrap correctly,
+  so the forced sizing is silently lost instead of being applied.
+correct_pattern: ggh4x.forced_panel_sizes_after_facet
+code_example_wrong: |
+  p + force_panelsizes(cols=[1, 0.3, 0.5]) + facet_grid2(cols=vars("drv"))
+code_example_right: |
+  p + facet_grid2(cols=vars("drv")) + force_panelsizes(cols=[1, 0.3, 0.5])

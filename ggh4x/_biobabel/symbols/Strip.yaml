@@ -1,0 +1,31 @@
+id: ggh4x.Strip
+import_path: ggh4x.strip_vanilla.Strip
+kind: class
+signature: ''
+purpose: "Base ggproto class building ggplot2-style facet strip label grobs and weaving them into the panel gtable."
+description: >
+  Not directly instantiated by users — built via `strip_vanilla()`, or one
+  of its subclass factories (`strip_themed()`, `strip_nested()`,
+  `strip_split()`, `strip_tag()`), or via a string/callable normalized by
+  `resolve_strip()`. Consumed as the `strip=` argument of
+  `facet_grid2()`/`facet_wrap2()`/`facet_nested()`/`facet_nested_wrap()`/
+  `facet_manual()`: the facet calls `strip.setup(layout, params, theme,
+  type)` then `strip.incorporate_grid(panels, switch)` (grid facets) or
+  `strip.incorporate_wrap(panels, position, clip, sizes)` (wrap/manual
+  facets) while drawing panels. Three of its methods (`draw_labels`,
+  `init_strip`, `finish_strip`) are plain "self-less" functions (no `self`
+  parameter at all), unlike its other, ordinarily-bound methods.
+parameters: []
+mutates: "execution_class=builder; setup()/get_strips() mutate self.elements/self.strips via ggproto's _set; incorporate_grid/incorporate_wrap return a new/modified Gtable without mutating self; returns_kind=new_object"
+returns: "N/A (class); consumed internally by the facet drawing pipeline."
+requires: []
+writes: []
+examples: []
+failure_fixes:
+  - when: "Calling draw_labels/init_strip/finish_strip as if they took self as the first argument."
+    suggest:
+      - "Call these three methods without a leading self argument; they are plain functions, not bound methods, on the base Strip class."
+    explanation: "tests/test_strip_base.py::test_self_less_methods_unbound confirms draw_labels/init_strip/finish_strip are unbound types.FunctionType, while setup_elements/assemble_strip are bound types.MethodType."
+related:
+  - ggh4x.strip_vanilla
+  - ggh4x.resolve_strip

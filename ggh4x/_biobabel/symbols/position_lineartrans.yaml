@@ -1,0 +1,44 @@
+id: ggh4x.position_lineartrans
+import_path: ggh4x.position_lineartrans.position_lineartrans
+kind: function
+signature: "def position_lineartrans(scale=(1, 1), shear=(0, 0), angle=0, M=None) -> PositionLinearTrans"
+purpose: "Position adjustment applying a 2x2 linear transform matrix to a layer's x/y columns."
+description: >
+  When `M` (an explicit 2x2 matrix) is not given, builds one from `scale`
+  (per-axis scale factors), `shear` (vertical, horizontal shear), and
+  `angle` (clockwise rotation in degrees). This is the default `position=`
+  for `geom_polygonraster()`, letting a raster grid be sheared, scaled, or
+  rotated. Passing `M` explicitly overrides `scale`/`shear`/`angle`
+  entirely.
+parameters:
+  - name: scale
+    type: Any
+    required: false
+    default: "(1, 1)"
+    description: "Length-2 per-axis scale factors."
+  - name: shear
+    type: Any
+    required: false
+    default: "(0, 0)"
+    description: "Length-2 (vertical, horizontal) shear factors."
+  - name: angle
+    type: float
+    required: false
+    default: "0"
+    description: "Clockwise rotation in degrees."
+  - name: M
+    type: Any
+    required: false
+    default: "None"
+    description: "Explicit 2x2 transform matrix; overrides scale/shear/angle when given."
+mutates: "execution_class=pure_function; compute_layer returns a transformed copy of the data, never mutates the caller's frame; returns_kind=new_object"
+returns: "A PositionLinearTrans instance, passed to a layer's position= argument."
+requires: []
+writes: []
+examples:
+  - "geom_polygonraster(position=position_lineartrans(shear=[0.2, 0.2]))"
+  - "geom_polygonraster(position=position_lineartrans(angle=45))"
+failure_fixes: []
+related:
+  - ggh4x.PositionLinearTrans
+  - ggh4x.geom_polygonraster

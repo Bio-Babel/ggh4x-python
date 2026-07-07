@@ -1,0 +1,137 @@
+id: ggh4x.facet_nested
+import_path: ggh4x.facet_nested.facet_nested
+kind: function
+signature: "def facet_nested(rows=None, cols=None, scales='fixed', space='fixed', axes='margins', remove_labels='none', independent='none', shrink=True, labeller='label_value', as_table=True, switch=None, drop=True, margins=False, nest_line=None, solo_line=False, resect=None, render_empty=True, strip=strip_nested, bleed=None) -> FacetNested"
+purpose: "facet_grid2 plus merged adjacent same-label strips and hierarchy nest_lines between strip layers."
+description: >
+  Everything `facet_grid2` does, plus (a) merging adjacent strips sharing
+  an outer facet value into one spanning strip (via the default
+  `strip=strip_nested`) and (b) drawing `nest_line`s between strip layers.
+  Variable order encodes hierarchy: the first variable is outermost. Also
+  relaxes the missing-variable rule versus `facet_grid2`: a faceting
+  variable is only force-expanded when *no* layer supplies any variable in
+  that direction, so partially-faceted layers may be nested as long as at
+  least one layer supplies all faceting variables. `nest_line=None`
+  (default) inherits the theme's `ggh4x.facet.nestline` element (blank by
+  default, so nothing is drawn unless the theme turns it on via
+  `theme(**{"ggh4x.facet.nestline": element_line(...)})`); `nest_line=True`
+  forces `element_line()`, `False` forces `element_blank()`. `bleed=` is
+  deprecated in favor of `strip_nested(bleed=...)` and emits a
+  DeprecationWarning.
+parameters:
+  - name: rows
+    type: Any
+    required: false
+    default: "None"
+    description: "Faceting variable(s) for rows; first is outermost in the hierarchy."
+  - name: cols
+    type: Any
+    required: false
+    default: "None"
+    description: "Faceting variable(s) for columns; first is outermost in the hierarchy."
+  - name: scales
+    type: Any
+    required: false
+    default: "'fixed'"
+    description: "'fixed'/'free_x'/'free_y'/'free' or bool."
+  - name: space
+    type: Any
+    required: false
+    default: "'fixed'"
+    description: "Same option set as scales."
+  - name: axes
+    type: Any
+    required: false
+    default: "'margins'"
+    description: "'margins'/'x'/'y'/'all' or bool."
+  - name: remove_labels
+    type: Any
+    required: false
+    default: "'none'"
+    description: "'none'/'x'/'y'/'all' or bool."
+  - name: independent
+    type: Any
+    required: false
+    default: "'none'"
+    description: "'none'/'x'/'y'/'all' or bool; requires the matching axis to be free."
+  - name: shrink
+    type: bool
+    required: false
+    default: "True"
+    description: "Shrink scale to fit output of statistics, not raw data."
+  - name: labeller
+    type: Any
+    required: false
+    default: "'label_value'"
+    description: "Callable or str controlling strip label text."
+  - name: as_table
+    type: bool
+    required: false
+    default: "True"
+    description: "When False, reverses row factor level order."
+  - name: switch
+    type: str
+    required: false
+    default: "None"
+    description: "'x'/'y'/'both'/None."
+  - name: drop
+    type: bool
+    required: false
+    default: "True"
+    description: "Drop unused factor levels."
+  - name: margins
+    type: Any
+    required: false
+    default: "False"
+    description: "bool or list of str."
+  - name: nest_line
+    type: Any
+    required: false
+    default: "None"
+    description: "ElementLine/ElementBlank/bool/None; None inherits the theme's ggh4x.facet.nestline (blank by default)."
+  - name: solo_line
+    type: bool
+    required: false
+    default: "False"
+    description: "Draw nest lines on single-child parent strips too, not only multi-child parents."
+  - name: resect
+    type: Any
+    required: false
+    default: "None"
+    description: "Unit or None; how much to shorten each nest line at both ends; None becomes Unit(0, 'mm')."
+  - name: render_empty
+    type: bool
+    required: false
+    default: "True"
+    description: "Draw data-less panels (True) or blank them (False)."
+  - name: strip
+    type: Any
+    required: false
+    default: "strip_nested"
+    description: "Strip / factory callable / str spec, resolved via resolve_strip; defaults to StripNested (label-merging strips)."
+  - name: bleed
+    type: bool
+    required: false
+    default: "None"
+    description: "Deprecated: forwards into strip.params['bleed'] with a DeprecationWarning; use strip_nested(bleed=...) instead."
+mutates: "execution_class=pure_function; no in-place mutation; emits DeprecationWarning when bleed is given; returns_kind=new_object"
+returns: "A FacetNested ggproto instance, added to a ggplot via +."
+requires: []
+writes: []
+examples:
+  - "facet_nested(cols=vars('Nester', 'Species'))"
+  - "facet_nested(cols=vars('Nester', 'Species'), nest_line=element_line(linetype=2)) + theme(strip_background=element_blank(), **{'ggh4x.facet.nestline': element_line(colour='blue')})"
+failure_fixes:
+  - when: "nest_line is given a value that is not True/False/None/an ElementLine/an ElementBlank."
+    suggest:
+      - "Pass nest_line as True, False, None, or an ElementLine/ElementBlank instance."
+    explanation: "facet_nested(nest_line='not-an-element') raises via cli_abort in the internal _coerce_nest_line helper (test_nest_line_invalid_raises)."
+  - when: "No layer supplies all the requested faceting variables."
+    suggest:
+      - "Ensure at least one layer's data contains every variable passed to rows=/cols=."
+    explanation: "FacetNested.vars_combine raises via cli_abort('At least one layer must contain all faceting variables: ...') when no layer has a full set (test_vars_combine_requires_one_full_layer)."
+related:
+  - ggh4x.FacetNested
+  - ggh4x.strip_nested
+  - ggh4x.facet_grid2
+  - ggh4x.facet_nested_wrap

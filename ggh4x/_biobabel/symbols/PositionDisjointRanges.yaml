@@ -1,0 +1,28 @@
+id: ggh4x.PositionDisjointRanges
+import_path: ggh4x.position_disjoint_ranges.PositionDisjointRanges
+kind: class
+signature: "def __init__(self, **kwargs)"
+purpose: "Position adjustment class assigning overlapping x-ranges into disjoint y-direction bins."
+description: >
+  Class attributes `extend=None`, `stepsize=None`; `required_aes =
+  ("xmin", "xmax", "ymin", "ymax")`. Not usually instantiated directly by
+  users — built via `position_disjoint_ranges()`. `compute_panel`'s
+  sweep-line algorithm has three branches depending on the `group` column:
+  multiple unique groups (per-group aggregate ranges), all `-1` (one range
+  per row, synthetic 1-based ids), or a single non-`-1` group (early return
+  with `data` unchanged). Bin boundaries use strict `<` comparison, so
+  touching endpoints (e.g. `[0,1]` and `[1,2]`) are placed in separate
+  bins.
+parameters:
+  - name: kwargs
+    type: Any
+    required: false
+    description: "extend, stepsize — set verbatim as instance attributes."
+mutates: "execution_class=pure_function; compute_panel copies data before shifting ymin/ymax except in the single-group early-return branch, which returns the original object; returns_kind=new_object"
+returns: "N/A (constructor); compute_panel returns a DataFrame with ymin/ymax shifted into disjoint bins."
+requires: []
+writes: []
+examples: []
+failure_fixes: []
+related:
+  - ggh4x.position_disjoint_ranges

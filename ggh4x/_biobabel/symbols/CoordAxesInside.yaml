@@ -1,0 +1,22 @@
+id: ggh4x.CoordAxesInside
+import_path: ggh4x.coord_axes_inside.CoordAxesInside
+kind: class
+signature: "class CoordAxesInside(CoordCartesian)"
+purpose: "Coordinate system drawing Cartesian axes at an interior data-coordinate origin instead of the panel edges."
+description: >
+  Not directly instantiated by users; built and configured via
+  `coord_axes_inside()`. `render_bg` is the load-bearing override: it
+  renders the background with interior-axis theme overrides, re-renders
+  the un-blanked axes via its ggproto parent, transforms the configured
+  origin through panel coordinates (clamped via `oob_squish` if out of
+  range), and repositions the axis viewports to that origin. `is_free()`
+  returns `ratio is None`.
+parameters: []
+mutates: "execution_class=pure_function; render_bg mutates the .vp of freshly rendered grob copies (via _replace_vp_coord) before returning them, not any caller-owned object; returns_kind=new_object"
+returns: "N/A (class); render_bg returns a grid grob_tree with 5 named children ['grid','axis-b','axis-t','axis-l','axis-r']."
+requires: []
+writes: []
+examples: []
+failure_fixes: []
+related:
+  - ggh4x.coord_axes_inside

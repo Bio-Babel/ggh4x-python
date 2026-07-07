@@ -1,0 +1,37 @@
+id: ggh4x.strip_vanilla
+import_path: ggh4x.strip_vanilla.strip_vanilla
+kind: function
+signature: "def strip_vanilla(clip='inherit', size='constant') -> Strip"
+purpose: "Construct the default, plain ggplot2-style facet strip — the baseline all other ggh4x strip types extend."
+description: >
+  Builds a `Strip` ggproto instance with no per-strip theming, no label
+  merging, and no tag box. Passed as the `strip=` argument of
+  `facet_grid2()`, `facet_wrap2()`, `facet_nested()`, `facet_nested_wrap()`,
+  or `facet_manual()`. `clip` controls whether text labels are clipped to
+  their background boxes; `size` controls whether strip margins stay
+  constant or vary across layers.
+parameters:
+  - name: clip
+    type: str
+    required: false
+    default: "'inherit'"
+    description: "One of 'inherit', 'on', 'off'."
+  - name: size
+    type: str
+    required: false
+    default: "'constant'"
+    description: "One of 'constant', 'variable'."
+mutates: "execution_class=pure_function; clones a module-level singleton, never mutates it; returns_kind=new_object"
+returns: "A Strip ggproto instance."
+requires: []
+writes: []
+examples:
+  - "facet_wrap2(vars('year'), strip=strip_vanilla(clip='off'))"
+failure_fixes:
+  - when: "clip or size is passed a value outside the allowed set."
+    suggest:
+      - "Use clip in {'inherit','on','off'} and size in {'constant','variable'}."
+    explanation: "strip_vanilla(clip='bogus') and strip_vanilla(size='bogus') both raise ValueError via arg_match0 (test_strip_vanilla_bad_clip, test_strip_vanilla_bad_size)."
+related:
+  - ggh4x.Strip
+  - ggh4x.resolve_strip

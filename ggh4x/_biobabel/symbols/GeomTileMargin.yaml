@@ -1,0 +1,22 @@
+id: ggh4x.GeomTileMargin
+import_path: ggh4x.geom_rectrug.GeomTileMargin
+kind: class
+signature: "class GeomTileMargin(GeomRectMargin)"
+purpose: "ggproto Geom converting centre x/y + width/height into margin rectangle bands."
+description: >
+  Not directly instantiated by users; built and configured via
+  `geom_tilemargin()`. Overrides only `setup_data` (converting
+  `x`/`y`/`width`/`height` into `xmin/xmax/ymin/ymax`, falling back to
+  `params["width"/"height"]` then to axis resolution when neither the
+  column nor the param is available) and the default aesthetics; inherits
+  `GeomRectMargin.draw_panel` unchanged (verified by identity in tests).
+parameters: []
+mutates: "execution_class=pure_function; setup_data copies data before mutating the copy; returns_kind=new_object"
+returns: "N/A (class); setup_data returns a DataFrame with xmin/xmax/ymin/ymax resolved and width/height dropped."
+requires: []
+writes: []
+examples: []
+failure_fixes: []
+related:
+  - ggh4x.geom_tilemargin
+  - ggh4x.GeomRectMargin

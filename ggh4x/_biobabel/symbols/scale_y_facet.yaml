@@ -1,0 +1,43 @@
+id: ggh4x.scale_y_facet
+import_path: ggh4x.panel_scales.scale_y_facet
+kind: function
+signature: "def scale_y_facet(expr, *args, type='continuous', **kwargs) -> ScaleFacet"
+purpose: "Pair a panel predicate with a resolved scale_y_<type>(...) scale, for per-panel y customization."
+description: >
+  Shorthand for `scale_facet(expr, 'y', *args, type=type, **kwargs)`. Same
+  semantics as `scale_x_facet` but targets the y aesthetic: requires the
+  facet's y scale to be free, stacks (appends) across repeated calls with
+  first-added-wins on overlapping predicates, and raises when added to an
+  unfaceted (`FacetNull`) plot.
+parameters:
+  - name: expr
+    type: Any
+    required: true
+    description: "Panel predicate: callable or DataFrame.eval-compatible string."
+  - name: args
+    type: Any
+    required: false
+    description: "Positional args forwarded to the resolved scale_y_<type>(...) constructor."
+  - name: type
+    type: str
+    required: false
+    default: "'continuous'"
+    description: "Scale type suffix resolved as scale_y_<type>."
+  - name: kwargs
+    type: Any
+    required: false
+    description: "Keyword args forwarded to the resolved scale_y_<type>(...) constructor."
+mutates: "execution_class=pure_function; the +-time handler either appends to an existing FreeScaled facet's scale list or lowers to facetted_pos_scales; returns_kind=new_object"
+returns: "A ScaleFacet pairing (predicate, scale), consumed by the ggplot + operator."
+requires: []
+writes: []
+examples:
+  - "p + facet_wrap2(vars('cyl'), scales='free_y') + scale_y_facet('cyl == 4', limits=[10, 50])"
+failure_fixes:
+  - when: "scale_x_facet()/scale_y_facet() is added to an unfaceted plot."
+    suggest:
+      - "Add a facet with a free matching axis before adding scale_y_facet."
+    explanation: "Adding scale_y_facet(...) to a FacetNull plot raises ValueError (test_scale_facet_rejects_facetnull)."
+related:
+  - ggh4x.scale_x_facet
+  - ggh4x.facetted_pos_scales

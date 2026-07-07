@@ -1,0 +1,24 @@
+id: ggh4x.forced_panel_sizes_after_facet
+name: "Forcing panel sizes, added after the facet"
+description: >
+  force_panelsizes() sets absolute row heights / column widths (via
+  grid_py.Unit) or relative ratios (via plain numerics plus respect=True).
+  It must be added after the facet call, since its handler wraps whatever
+  facet class is already installed on plot.facet (see the
+  panel_scale_and_size_ordering concept).
+code_template: |
+  from ggplot2_py import ggplot, aes, geom_point, vars
+  from ggh4x import facet_grid2, force_panelsizes
+
+  p = ggplot(mpg, aes("displ", "hwy")) + geom_point()
+
+  # Absolute sizes.
+  p + force_panelsizes(rows=unit(2, "cm"), cols=unit(2, "in"))
+
+  # Relative ratios, added after the facet.
+  p + facet_grid2(cols=vars("drv")) + force_panelsizes(cols=[1, 0.3, 0.5], rows=[1], respect=True)
+applicable_to:
+  - ggh4x.force_panelsizes
+  - ggh4x.panel_scale_and_size_ordering
+anti_pattern_paired: ggh4x.force_panelsizes_before_facet
+typical_use_case: "Panels must render at a fixed physical size, or at consistent relative proportions, regardless of data range."

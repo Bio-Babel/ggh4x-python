@@ -1,0 +1,36 @@
+id: ggh4x.position_disjoint_ranges
+import_path: ggh4x.position_disjoint_ranges.position_disjoint_ranges
+kind: function
+signature: "def position_disjoint_ranges(extend=1, stepsize=1) -> PositionDisjointRanges"
+purpose: "Position adjustment that shifts overlapping xmin/xmax ranges into disjoint y-direction bins."
+description: >
+  Requires `xmin`/`xmax`/`ymin`/`ymax` aesthetics (pairs well with
+  `geom_rect`/`geom_tile`). Sweeps ranges (each extended by `extend`) sorted
+  by `xmin`, assigns each to the lowest y-direction bin whose current end
+  is strictly less than the new range's start (touching endpoints are
+  treated as overlapping, not disjoint), and shifts `ymin`/`ymax` by
+  `stepsize * (bin - 1)`.
+parameters:
+  - name: extend
+    type: float
+    required: false
+    default: "1"
+    description: "Total extension applied to each range (both ends) before computing overlaps."
+  - name: stepsize
+    type: float
+    required: false
+    default: "1"
+    description: "Vertical spacing between bins; sign controls growth direction."
+mutates: "execution_class=pure_function; compute_panel copies data before shifting ymin/ymax in the overlap-resolving branch; returns_kind=new_object"
+returns: "A PositionDisjointRanges instance, passed to a layer's position= argument."
+requires: []
+writes: []
+examples:
+  - "geom_rect(position=position_disjoint_ranges(extend=0, stepsize=1))"
+failure_fixes:
+  - when: "The layer data lacks xmin/xmax aesthetics."
+    suggest:
+      - "Map xmin and xmax (in addition to ymin/ymax) on the layer using position_disjoint_ranges."
+    explanation: "PositionDisjointRanges.setup_params emits a UserWarning ('Undefined ranges in the x-direction...') via cli_warn when xmin/xmax are missing, but does not raise (test_disjoint_setup_params_warns_on_missing_x)."
+related:
+  - ggh4x.PositionDisjointRanges

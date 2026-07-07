@@ -1,0 +1,23 @@
+id: ggh4x.GeomBox
+import_path: ggh4x.geom_box.GeomBox
+kind: class
+signature: "class GeomBox(Geom)"
+purpose: "ggproto Geom drawing rectangles resolved from any two of four position aesthetics per axis."
+description: >
+  `optional_aes = ("xmin","xmax","x","width","ymin","ymax","y","height")`.
+  Not directly instantiated by users; built and configured via
+  `geom_box()`. `setup_data` resolves bounds via the module-level
+  `resolve_box()` helper and emits a warning (never raises) via `cli_warn`
+  when any bound is unresolvable, listing the missing aesthetics. Under
+  linear coords draws plain rects (or rounded rects when `radius` is
+  given); under non-linear coords each row is expanded to a polygon and
+  delegated to `ggplot2_py.GeomPolygon.draw_panel`.
+parameters: []
+mutates: "execution_class=pure_function; setup_data copies data before mutating the copy; draw_panel returns new grobs; returns_kind=new_object"
+returns: "N/A (class); setup_data returns a DataFrame with xmin/xmax/ymin/ymax resolved; draw_panel returns a grid grob."
+requires: []
+writes: []
+examples: []
+failure_fixes: []
+related:
+  - ggh4x.geom_box

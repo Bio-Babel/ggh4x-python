@@ -1,0 +1,24 @@
+id: ggh4x.FacetNestedWrap
+import_path: ggh4x.facet_nested_wrap.FacetNestedWrap
+kind: class
+signature: ''
+purpose: "ggproto Facet backing facet_nested_wrap(); a minimal FacetWrap2 override that adds hierarchy nest lines."
+description: >
+  Not directly instantiated by users — built via `facet_nested_wrap()`'s
+  internal `new_wrap_facets(...)` helper. Subclass of
+  `ggh4x.facet_wrap2.FacetWrap2`. Overrides only `finish_panels`, which
+  delegates to the same `ggh4x.facet_nested.add_nest_indicator` helper used
+  by `FacetNested`; layout, axes, and label-merging strip behavior are
+  otherwise fully inherited from `FacetWrap2` plus the `StripNested` strip
+  subsystem.
+parameters: []
+mutates: "execution_class=builder; finish_panels returns a decorated Gtable; returns_kind=new_object"
+returns: "N/A (class); finish_panels returns a Gtable decorated with nest-line grobs and adjusted z-order."
+requires: []
+writes: []
+examples: []
+failure_fixes: []
+related:
+  - ggh4x.facet_nested_wrap
+  - ggh4x.FacetWrap2
+  - ggh4x.FacetNested

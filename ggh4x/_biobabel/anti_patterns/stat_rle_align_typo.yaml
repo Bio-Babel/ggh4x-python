@@ -1,0 +1,14 @@
+id: ggh4x.stat_rle_align_typo
+name: "stat_rle() align='middle' typo instead of 'centre'/'center'"
+detection:
+  regex: "align\\s*=\\s*['\"]middle['\"]"
+  static_only: true
+why_bad: >
+  stat_rle()'s align= argument only accepts "none", "centre"/"center",
+  "start", or "end"; "middle" is not a valid alias for "centre" and raises
+  at call time via arg_match0 instead of closing gaps between runs.
+correct_pattern: ggh4x.run_length_encoded_intervals
+code_example_wrong: |
+  stat_rle(aes(label="lab"), align="middle")
+code_example_right: |
+  stat_rle(aes(label="lab"), align="center")

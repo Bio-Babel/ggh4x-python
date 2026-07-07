@@ -1,0 +1,19 @@
+id: ggh4x.axes_inside_centered_data
+name: "Axes drawn inside the panel at a centered origin"
+description: >
+  coord_axes_inside() moves the x/y axes to an interior data-coordinate
+  intercept; it works best on pre-centered data (e.g. mean-subtracted) so
+  the interior origin lands meaningfully in view, and requires
+  theme(axis_line=element_line()) to actually render the moved lines.
+code_template: |
+  from ggplot2_py import ggplot, aes, geom_point, theme, element_line
+  from ggh4x import coord_axes_inside
+
+  mpg3 = mpg.copy()
+  mpg3["dx"] = mpg3["displ"] - mpg3["displ"].mean()
+  mpg3["dy"] = mpg3["hwy"] - mpg3["hwy"].mean()
+
+  ggplot(mpg3, aes("dx", "dy")) + geom_point() + theme(axis_line=element_line()) + coord_axes_inside()
+applicable_to:
+  - ggh4x.coord_axes_inside
+typical_use_case: "Data naturally centers on zero (e.g. residuals, fold-changes) and the axes should cross through that center rather than sit at the panel edges."

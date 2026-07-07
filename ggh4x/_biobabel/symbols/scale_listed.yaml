@@ -1,0 +1,48 @@
+id: ggh4x.scale_listed
+import_path: ggh4x.multiscale.scale_listed
+kind: function
+signature: "def scale_listed(scalelist, replaces=None) -> List[MultiScale]"
+purpose: "Distribute a list of ready-made, single-non-standard-aesthetic scales, grouped by the standard aesthetic each replaces."
+description: >
+  Each element of `scalelist` must be a `ggplot2_py.scale.Scale` created
+  with exactly one non-standard `aesthetics` argument; `replaces` names the
+  standard aesthetic (typically `colour`/`fill`) each substitutes. Scales
+  are grouped by distinct `replaces` value (sorted alphabetically) into one
+  `MultiScale` per group. As a side effect, mutates each scale's `.guide`
+  attribute in place (materializing string/None/False guides into concrete
+  `Guide` instances). Since this returns a plain Python `list` (not a
+  `MultiScale`), it flows through the ordinary list handler of
+  `update_ggplot`, which iterates and dispatches each `MultiScale` element
+  individually.
+parameters:
+  - name: scalelist
+    type: Any
+    required: true
+    description: "List of ggplot2_py Scale objects, each created with exactly one non-standard aesthetics argument."
+  - name: replaces
+    type: Any
+    required: false
+    default: "None"
+    description: "Sequence of standard aesthetic names (e.g. 'fill','colour'), parallel to scalelist; empty list if None."
+mutates: "execution_class=side_effecting_function; mutates each scale's .guide attribute in place; returns_kind=new_object"
+returns: "A list of MultiScale containers, one per distinct replaces name, in sorted alphabetical order of that name."
+requires: []
+writes: []
+examples:
+  - "gh + scale_listed(scalelist=[scale_fill_distiller(palette='RdBu', aesthetics='cor'), scale_fill_brewer(palette='Set1', aesthetics='species')], replaces=['fill', 'fill'])"
+failure_fixes:
+  - when: "scalelist and replaces have different lengths."
+    suggest:
+      - "Make replaces the same length as scalelist, with one entry per scale."
+    explanation: "scale_listed raises ValueError ('must be parallel...') when the lengths mismatch (test_replaces_length_mismatch_raises)."
+  - when: "replaces contains a name that is not a valid ggplot2 aesthetic."
+    suggest:
+      - "Use a real aesthetic name (e.g. 'colour', 'fill') for every entry in replaces."
+    explanation: "scale_listed(replaces=['not_an_aes']) raises ValueError (test_invalid_replaces_aesthetic_raises)."
+  - when: "An element of scalelist is not a Scale object, or has more than one non-standard aesthetic."
+    suggest:
+      - "Pass only ggplot2_py Scale instances, each built with exactly one non-standard aesthetics= name."
+    explanation: "scale_listed(scalelist=['not a scale']) raises ValueError ('must have valid Scale objects'); a scale with 2 aesthetics raises ValueError ('can only accept 1 aesthetic per scale')."
+related:
+  - ggh4x.scale_fill_multi
+  - ggh4x.scale_colour_multi

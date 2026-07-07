@@ -1,0 +1,60 @@
+id: ggh4x.scale_colour_multi
+import_path: ggh4x.multiscale.scale_colour_multi
+kind: function
+signature: "def scale_colour_multi(*, colours=MISSING, values=None, na_value='transparent', guide='colourbar', aesthetics='colour', colors=MISSING, **kwargs) -> MultiScale"
+purpose: "Map multiple non-standard colour aesthetics (e.g. colour1, colour2) each to its own gradient scale."
+description: >
+  Identical machinery to `scale_fill_multi`, targeting `colour` instead of
+  `fill` (`replaced_aes == "colour"` on the returned `MultiScale`).
+  `scale_color_multi` is a thin American-spelling wrapper that forwards all
+  arguments to this function.
+parameters:
+  - name: colours
+    type: Any
+    required: false
+    default: "['white', 'black']"
+    description: "Gradient colours; a list is per-aesthetic, anything else is broadcast."
+  - name: values
+    type: Any
+    required: false
+    default: "None"
+    description: "Gradient value positions, per-aesthetic list or broadcast."
+  - name: na_value
+    type: str
+    required: false
+    default: "'transparent'"
+    description: "Colour for missing values."
+  - name: guide
+    type: Any
+    required: false
+    default: "'colourbar'"
+    description: "'colourbar'/'colorbar'/'legend' or Guide instance(s)."
+  - name: aesthetics
+    type: Any
+    required: false
+    default: "'colour'"
+    description: "The non-standard aesthetic name(s) to create."
+  - name: colors
+    type: Any
+    required: false
+    default: "None"
+    description: "American-spelling alias for colours."
+  - name: kwargs
+    type: Any
+    required: false
+    description: "Extra args forwarded to continuous_scale."
+mutates: "execution_class=pure_function; construction is pure; the +-time handler mutates plot.scales/plot.layers when the MultiScale is added; returns_kind=new_object"
+returns: "A MultiScale container (replaced_aes='colour') consumed by the ggplot + operator."
+requires: []
+writes: []
+examples:
+  - "g + scale_colour_multi(aesthetics=['swidth', 'pleng', 'pwidth'], colours=[['black', 'green'], ['gray', 'red'], ['white', 'blue']])"
+failure_fixes:
+  - when: "guide is a string other than 'colourbar'/'colorbar'/'legend' and not a Guide instance."
+    suggest:
+      - "Pass guide as 'colourbar', 'colorbar', 'legend', or a Guide instance."
+    explanation: "Shares _distribute_scale_multi validation with scale_fill_multi; an invalid guide raises ValueError."
+related:
+  - ggh4x.scale_color_multi
+  - ggh4x.scale_fill_multi
+  - ggh4x.scale_listed

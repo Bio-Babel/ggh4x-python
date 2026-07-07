@@ -1,0 +1,43 @@
+id: ggh4x.weave_factors
+import_path: ggh4x.conveniences.weave_factors
+kind: function
+signature: "def weave_factors(*args, drop=True, sep='.', replace_na=True)"
+purpose: "Combine multiple factors/vectors into one factor with first-input-priority level ordering."
+description: >
+  Builds an `interaction(..., lex.order=TRUE)`-like combined factor from one
+  or more input vectors (factors/Categoricals or plain sequences sharing a
+  common length or length 1). Level labels are joined with `sep`.
+  `replace_na=True` (default) replaces `NA` with an empty string before
+  joining. Raises if inputs do not share a common length or length 1.
+parameters:
+  - name: args
+    type: Any
+    required: true
+    description: "One or more input vectors (factors/Categoricals/sequences) to combine; at least one is required."
+  - name: drop
+    type: bool
+    required: false
+    default: "True"
+    description: "Drop unobserved level combinations."
+  - name: sep
+    type: str
+    required: false
+    default: "'.'"
+    description: "Delimiter joining per-input labels into the new combined level labels."
+  - name: replace_na
+    type: bool
+    required: false
+    default: "True"
+    description: "Replace NA with empty strings before joining."
+mutates: "execution_class=pure_function; no in-place mutation; returns_kind=new_object"
+returns: "A pandas.Categorical (ordered=False) combining all inputs; None if called with zero args."
+requires: []
+writes: []
+examples:
+  - "weave_factors(df['a'], df['b'], sep='-')"
+failure_fixes:
+  - when: "Inputs to weave_factors() do not share a common length or length 1."
+    suggest:
+      - "Ensure every positional argument has the same length, or is a length-1 scalar to be recycled."
+    explanation: "weave_factors raises ValueError (\"All inputs to weave_factors should have the same length, or length 1.\") via cli_abort when lengths are incompatible."
+related: []

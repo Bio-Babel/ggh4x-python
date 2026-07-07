@@ -1,0 +1,24 @@
+id: ggh4x.ggh4x_theme_elements
+import_path: ggh4x.themes_ggh4x.ggh4x_theme_elements
+kind: function
+signature: "def ggh4x_theme_elements() -> None"
+purpose: "Register ggh4x's extended theme element ggh4x.facet.nestline into ggplot2's global theme element tree."
+description: >
+  Registers the `ggh4x.facet.nestline` theme element (the parent for the
+  `nest_line` argument of `facet_nested()`/`facet_nested_wrap()`) into
+  ggplot2_py's global element tree with a blank default, mirroring R's
+  `.onLoad` registration. It is called once automatically at `ggh4x`
+  package-import time (bottom of `themes_ggh4x.py`); calling it again is
+  idempotent (merges the same entry, re-sets the same blank default) but is
+  not required for ordinary usage.
+parameters: []
+mutates: "execution_class=side_effecting_function; mutates the global ggplot2_py theme element registry in place; returns_kind=none"
+returns: "None."
+requires: []
+writes: []
+examples:
+  - "ggh4x_theme_elements()"
+failure_fixes: []
+related:
+  - ggh4x.facet_nested
+  - ggh4x.facet_nested_wrap

@@ -1,0 +1,18 @@
+id: ggh4x.rolling_kernel_trend
+name: "Model-free kernel-smoothed trend line"
+description: >
+  stat_rollingkernel() draws a kernel-weighted rolling-mean trend without
+  fitting a parametric model; kernel="mean" with an explicit bw= gives a
+  blockier, uniform-kernel rolling mean instead of the default gaussian
+  kernel.
+code_template: |
+  from ggplot2_py import ggplot, aes, geom_point
+  from ggh4x import stat_rollingkernel
+
+  ggplot(mpg, aes(x="displ", y="hwy", color="class")) + geom_point() + stat_rollingkernel()
+
+  # A uniform ("mean") kernel gives a blockier rolling mean.
+  ggplot(mpg, aes(x="displ", y="hwy", color="class")) + geom_point() + stat_rollingkernel(kernel="mean", bw=1)
+applicable_to:
+  - ggh4x.stat_rollingkernel
+typical_use_case: "A scatterplot needs a smooth local-average trend line without assuming a parametric functional form."

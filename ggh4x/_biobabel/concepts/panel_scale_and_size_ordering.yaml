@@ -1,0 +1,31 @@
+id: ggh4x.panel_scale_and_size_ordering
+name: "Per-panel scale and forced panel size ordering"
+category: panel-control
+description: >
+  `facetted_pos_scales`/`scale_x_facet`/`scale_y_facet` and
+  `force_panelsizes` are not facets themselves — they are deferred
+  containers whose `+`-time handlers (registered on `update_ggplot`) clone
+  or mutate whatever facet is already on `plot.facet`. Both therefore have
+  a real ordering dependency relative to the facet call.
+invariants:
+  - "facetted_pos_scales()/scale_x_facet()/scale_y_facet() require the target axis to already be free (scales='free'/'free_x'/'free_y') on the facet; adding them against a fixed axis only warns, it does not raise, so the per-panel override silently has no visible effect."
+  - "force_panelsizes() must be added after the facet call in the + chain: its handler closes over the concrete facet class already installed on plot.facet at add-time (e.g. facet_grid2(...) + force_panelsizes(...) becomes a ForcedFacetGrid2); adding it before the facet, or replacing the facet afterward, does not wrap the intended object."
+  - "Adding scale_x_facet()/scale_y_facet() to an unfaceted (FacetNull) plot raises; a facet must exist first."
+  - "Repeated scale_x_facet()/scale_y_facet() calls for overlapping panel predicates append rather than overwrite; the first-added scale wins where predicates overlap, not the last-added (unlike plain ggplot2 scale replacement)."
+mental_model: |
+  For R users: same `+`.ggplot dispatch mechanism as R ggh4x
+  (`ggplot_add.facetted_pos_scales`/`ggplot_add.force_panelsizes`), so the
+  same "add after the facet" ordering advice from the R docs applies
+  unchanged.
+
+  For Python users: think of these as facet *decorators* applied at `+`
+  time, not facets in their own right — the object you see in
+  `plot.facet` after adding one is a dynamically renamed wrapper
+  (`Forced<FacetClassName>` or `FreeScaled<FacetClassName>`) around the
+  facet you already added, so the facet must exist first.
+
+  General: because the wrapping closes over the current facet class, only
+  the facet in place *at the moment of the `+`* is decorated — later
+  facet replacement does not retroactively re-wrap.
+related_concepts:
+  - ggh4x.facet_family_selection

@@ -1,0 +1,13 @@
+id: ggh4x.facet_strip_composition
+description: >
+  How a facet (facet_grid2/facet_wrap2/facet_nested/facet_nested_wrap/
+  facet_manual) resolves and consumes its strip= argument.
+parent: ggh4x.facet_family_selection
+child: ggh4x.strip_protocol
+constraints:
+  - "The facet resolves strip= through resolve_strip() before drawing: a string or factory callable is turned into an all-defaults Strip instance, and an already-built Strip instance is passed through unchanged (not cloned)."
+  - "facet_nested()/facet_nested_wrap() default strip= to strip_nested() (a StripNested instance), not strip_vanilla(); explicitly passing strip='vanilla' to facet_nested() disables the label-merging behavior those facets are usually chosen for."
+  - "StripTag never merges labels across panels regardless of the facet it is attached to; choosing StripTag on a facet_nested() call does not reproduce facet_nested()'s usual merged-strip look."
+typical_errors:
+  - "Passing strip=Strip (the class) or strip=StripNested (the class) instead of calling its factory function (strip_vanilla()/strip_nested()) — resolve_strip only accepts a name string, a zero-argument-callable factory, or an already-built instance."
+  - "Expecting facet_nested(strip='vanilla') to still merge adjacent same-label strips; the merge behavior belongs to StripNested, not to facet_nested() itself."

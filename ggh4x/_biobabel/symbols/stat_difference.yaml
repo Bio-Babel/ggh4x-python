@@ -1,0 +1,71 @@
+id: ggh4x.stat_difference
+import_path: ggh4x.stat_difference.stat_difference
+kind: function
+signature: "def stat_difference(mapping=None, data=None, geom='ribbon', position='identity', *, levels=('+', '-'), na_rm=False, orientation=None, show_legend=None, inherit_aes=True, **kwargs)"
+purpose: "Build a ribbon layer whose fill encodes the sign of ymax - ymin, interpolating exact crossover points."
+description: >
+  Requires either `x`+`ymin`+`ymax` or `y`+`xmin`+`xmax` aesthetics. Per
+  group, sorts along the main axis, run-length encodes the sign of the
+  difference, and interpolates the exact crossing position so the rendered
+  ribbon does not look truncated at a sign change. `levels` names the two
+  fill categories (`levels[0]` when the "max" series is larger,
+  `levels[1]` otherwise).
+parameters:
+  - name: mapping
+    type: Mapping
+    required: false
+    default: "None"
+    description: "aes() mapping; requires x|y plus ymin|xmin and ymax|xmax."
+  - name: data
+    type: Any
+    required: false
+    default: "None"
+    description: "Layer data or callable."
+  - name: geom
+    type: str
+    required: false
+    default: "'ribbon'"
+    description: "Geometry used to render the layer."
+  - name: position
+    type: str
+    required: false
+    default: "'identity'"
+    description: "Position adjustment."
+  - name: levels
+    type: "Tuple[str, str]"
+    required: false
+    default: "('+', '-')"
+    description: "Fill category labels: levels[0] when ymax>ymin, levels[1] when ymax<ymin."
+  - name: na_rm
+    type: bool
+    required: false
+    default: "False"
+    description: "If False, missing values are removed with a warning."
+  - name: orientation
+    type: str
+    required: false
+    default: "None"
+    description: "'x' or 'y'; None infers from aesthetics."
+  - name: show_legend
+    type: bool
+    required: false
+    default: "None"
+    description: "Whether to show the layer in the legend."
+  - name: inherit_aes
+    type: bool
+    required: false
+    default: "True"
+    description: "Whether to inherit plot aesthetics."
+  - name: kwargs
+    type: Any
+    required: false
+    description: "Other layer args, e.g. alpha."
+mutates: "execution_class=pure_function; no in-place mutation; returns_kind=new_object"
+returns: "A ggplot2_py Layer backed by StatDifference."
+requires: []
+writes: []
+examples:
+  - "stat_difference(aes(ymin='psavert', ymax='uempmed'), levels=['More uempmed', 'More psavert'], alpha=0.8)"
+failure_fixes: []
+related:
+  - ggh4x.StatDifference

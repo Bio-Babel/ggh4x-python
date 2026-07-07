@@ -1,0 +1,60 @@
+id: ggh4x.save_plot
+import_path: ggh4x.save.save_plot
+kind: function
+signature: "def save_plot(*args, plot=None, width=None, height=None, units='in', dpi=300, **kwargs)"
+purpose: "Save a ggplot to file, auto-measuring its size from the built gtable's absolute panel dimensions."
+description: >
+  Wraps `ggplot2_py.save.ggsave`. When `width`/`height` are omitted, measures
+  them from the plot's built gtable: this guess is only meaningful when
+  panels have an absolute size (set via `theme(panel_widths=,
+  panel_heights=)` or via `force_panelsizes()`); with the default
+  proportional ("null") panel sizing, the current graphics-device size is
+  used instead. Raises if no `plot` is supplied and there is no
+  last-displayed plot.
+parameters:
+  - name: args
+    type: Any
+    required: false
+    description: "Positional args forwarded to ggsave; the first is the output filename."
+  - name: plot
+    type: Any
+    required: false
+    default: "None"
+    description: "The ggplot (or patchwork-like) object to save; falls back to get_last_plot() when None."
+  - name: width
+    type: float
+    required: false
+    default: "None"
+    description: "Output width in units; measured from the gtable when None."
+  - name: height
+    type: float
+    required: false
+    default: "None"
+    description: "Output height in units; measured from the gtable when None."
+  - name: units
+    type: str
+    required: false
+    default: "'in'"
+    description: "One of 'in', 'cm', 'mm', 'px'."
+  - name: dpi
+    type: float
+    required: false
+    default: "300"
+    description: "Resolution, also used as the px-to-inch divisor."
+  - name: kwargs
+    type: Any
+    required: false
+    description: "Further arguments forwarded to ggsave (e.g. device, path, bg, limitsize, scale)."
+mutates: "execution_class=side_effecting_function; writes a file to disk via ggsave, does not mutate the passed-in plot; returns_kind=new_object"
+returns: "A SavePlotResult (str subclass equal to the output file path) carrying extra .width/.height attributes in inches."
+requires: []
+writes: []
+examples:
+  - "save_plot('out.png', plot=p, width=6, height=4)"
+failure_fixes:
+  - when: "save_plot() is called with plot=None and no plot has been displayed yet."
+    suggest:
+      - "Pass plot= explicitly, or call it right after building/showing a ggplot."
+    explanation: "save_plot raises via cli_abort('No plot to save. Supply plot or create a plot first.') when plot is None and there is no last-displayed plot."
+related:
+  - ggh4x.force_panelsizes

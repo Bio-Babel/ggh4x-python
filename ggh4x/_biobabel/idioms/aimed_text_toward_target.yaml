@@ -1,0 +1,22 @@
+id: ggh4x.aimed_text_toward_target
+name: "Text labels aimed at a target point"
+description: >
+  geom_text_aimed() rotates each label to point toward (xend, yend);
+  nudge_x/nudge_y cannot be combined with a non-identity position=. It is
+  especially effective combined with coord_polar(), where labels follow
+  the wedge angle; in Cartesian coordinates, labels near the panel edge
+  typically need coord_cartesian(clip="off") to avoid being clipped.
+code_template: |
+  from ggplot2_py import ggplot, aes, geom_point, coord_cartesian
+  from ggh4x import geom_text_aimed
+
+  (
+      ggplot(mtcars, aes("mpg", "wt"))
+      + geom_point(aes(colour="cyl_f"))
+      + geom_text_aimed(aes(label="car"), hjust=-0.2, size=3, xend=mpg_rng / 2, yend=wt_rng / 2)
+      + coord_cartesian(clip="off")
+  )
+applicable_to:
+  - ggh4x.geom_text_aimed
+anti_pattern_paired: ggh4x.text_aimed_nudge_position_conflict
+typical_use_case: "Point labels should visually point toward a shared reference location (e.g. a group centroid) rather than sit at a fixed offset."

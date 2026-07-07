@@ -1,0 +1,24 @@
+id: ggh4x.GeomPointPath
+import_path: ggh4x.geom_pointpath.GeomPointPath
+kind: class
+signature: "class GeomPointPath(GeomPoint)"
+purpose: "ggproto Geom drawing points connected by gapped path segments in data order."
+description: >
+  `default_aes` extends GeomPoint's with `linewidth`, `linetype`, and a
+  `mult=0.5` gap-radius scale factor; `non_missing_aes = ("size", "colour")`.
+  Not directly instantiated by users; built and configured via
+  `geom_pointpath()`. `draw_panel` first delegates to its ggproto parent
+  (`GeomPoint.draw_panel`) to draw the points, then independently computes
+  and draws gapped connecting segments, picking `GapSegmentsGrob` under
+  linear coords or `GapSegmentsChainGrob` under non-linear coords (e.g.
+  `coord_polar`) based on `coord.is_linear()`.
+parameters: []
+mutates: "execution_class=pure_function; draw_panel copies data before mutating; returns_kind=new_object"
+returns: "N/A (class); draw_panel returns a grid grob_tree of the gap-path grob (if any) and the point grob."
+requires: []
+writes: []
+examples: []
+failure_fixes: []
+related:
+  - ggh4x.geom_pointpath
+  - ggh4x.GeomPointpath

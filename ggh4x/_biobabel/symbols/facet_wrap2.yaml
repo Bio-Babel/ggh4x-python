@@ -1,0 +1,94 @@
+id: ggh4x.facet_wrap2
+import_path: ggh4x.facet_wrap2.facet_wrap2
+kind: function
+signature: "def facet_wrap2(facets, nrow=None, ncol=None, scales='fixed', axes='margins', remove_labels='none', shrink=True, labeller='label_value', as_table=True, drop=True, dir='h', strip_position='top', trim_blank=True, strip='vanilla') -> FacetWrap2"
+purpose: "Extended facet_wrap that can draw/purge inner axes when scales are fixed and honor a literal nrow/ncol."
+description: >
+  Distinguished from `facet_grid2` by ribbon/wrap layout (a single
+  `facets` spec, no separate row/col formula) and from `facet_manual` by
+  automatic (not user-specified) panel placement. `axes=`/`remove_labels=`
+  mirror `facet_grid2`'s. `trim_blank=False` takes `nrow`/`ncol` literally
+  (plain `facet_wrap` always trims blank trailing cells).
+parameters:
+  - name: facets
+    type: Any
+    required: true
+    description: "Faceting variable(s) (formula/list/dict)."
+  - name: nrow
+    type: int
+    required: false
+    default: "None"
+    description: "Number of rows."
+  - name: ncol
+    type: int
+    required: false
+    default: "None"
+    description: "Number of columns."
+  - name: scales
+    type: Any
+    required: false
+    default: "'fixed'"
+    description: "'fixed'/'free_x'/'free_y'/'free' or bool."
+  - name: axes
+    type: Any
+    required: false
+    default: "'margins'"
+    description: "'margins'/'x'/'y'/'all' or bool; where inner axes are drawn."
+  - name: remove_labels
+    type: Any
+    required: false
+    default: "'none'"
+    description: "'none'/'x'/'y'/'all' or bool; whether inner-axis text is removed."
+  - name: shrink
+    type: bool
+    required: false
+    default: "True"
+    description: "Shrink scale to fit output of statistics, not raw data."
+  - name: labeller
+    type: Any
+    required: false
+    default: "'label_value'"
+    description: "Callable or str controlling strip label text."
+  - name: as_table
+    type: bool
+    required: false
+    default: "True"
+    description: "When False, reverses factor level order."
+  - name: drop
+    type: bool
+    required: false
+    default: "True"
+    description: "Drop unused factor levels."
+  - name: dir
+    type: str
+    required: false
+    default: "'h'"
+    description: "'h' or 'v'; panel fill direction."
+  - name: strip_position
+    type: str
+    required: false
+    default: "'top'"
+    description: "'top'/'bottom'/'left'/'right'."
+  - name: trim_blank
+    type: bool
+    required: false
+    default: "True"
+    description: "When False, nrow/ncol are taken literally instead of trimming blank trailing cells."
+  - name: strip
+    type: Any
+    required: false
+    default: "'vanilla'"
+    description: "Strip / factory callable / str spec, resolved via resolve_strip."
+mutates: "execution_class=pure_function; no in-place mutation; returns_kind=new_object"
+returns: "A FacetWrap2 ggproto instance, added to a ggplot via +."
+requires: []
+writes: []
+examples:
+  - "facet_wrap2(vars('class'))"
+  - "facet_wrap2(vars('class'), axes='all', remove_labels='x')"
+  - "facet_wrap2(vars('class'), nrow=4, ncol=4, trim_blank=False)"
+failure_fixes: []
+related:
+  - ggh4x.FacetWrap2
+  - ggh4x.resolve_strip
+  - ggh4x.facet_nested_wrap

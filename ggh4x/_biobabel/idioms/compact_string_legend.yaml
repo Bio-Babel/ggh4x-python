@@ -1,0 +1,19 @@
+id: ggh4x.compact_string_legend
+name: "Compact text-only legend keys"
+description: >
+  guide_stringlegend() is requested through a scale's guide= argument (not
+  added as a separate + layer); it renders legend keys as coloured text
+  labels instead of geom swatches, useful for legends with many small
+  points where swatches add little.
+code_template: |
+  from ggplot2_py import ggplot, aes, geom_point, scale_colour_brewer
+  from ggh4x import guide_stringlegend
+
+  (
+      ggplot(diamonds_sample, aes("price", "carat", colour="clarity"))
+      + geom_point(shape=".")
+      + scale_colour_brewer(palette="Dark2", guide=guide_stringlegend())
+  )
+applicable_to:
+  - ggh4x.guide_stringlegend
+typical_use_case: "A discrete colour/fill legend with many small point markers would benefit from plain coloured text keys instead of swatches."

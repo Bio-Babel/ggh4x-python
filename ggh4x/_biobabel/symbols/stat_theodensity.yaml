@@ -1,0 +1,90 @@
+id: ggh4x.stat_theodensity
+import_path: ggh4x.stat_theodensity.stat_theodensity
+kind: function
+signature: "def stat_theodensity(mapping=None, data=None, geom='line', position='identity', *, distri='norm', n=512, fix_arg=None, start_arg=None, na_rm=True, show_legend=None, inherit_aes=True, **kwargs)"
+purpose: "Fit a named theoretical distribution to x by maximum likelihood and draw its density/mass function."
+description: >
+  Builds a ggplot2 layer (default geom "line") backed by StatTheoDensity,
+  which fits `distri`'s parameters by MLE and evaluates the pdf/pmf on an
+  `n`-point grid for comparison against histograms/KDEs. `distri` must be a
+  distribution name without the `d`/`p`/`q`/`r` prefix (e.g. `"norm"`,
+  `"gamma"`, `"t"`, `"f"`, `"nbinom"`); `multinom`/`hyper`/`wilcox`/`signrank`
+  are unsupported. Distributions lacking natural starting values (e.g.
+  Student-t, F) need `start_arg=`; discrete distributions require integer
+  input and are best rendered with `geom="point"` rather than the default
+  line.
+parameters:
+  - name: mapping
+    type: Mapping
+    required: false
+    default: "None"
+    description: "aes() mapping; requires an x aesthetic."
+  - name: data
+    type: Any
+    required: false
+    default: "None"
+    description: "Layer data or callable."
+  - name: geom
+    type: str
+    required: false
+    default: "'line'"
+    description: "Geometry used to render the layer."
+  - name: position
+    type: str
+    required: false
+    default: "'identity'"
+    description: "Position adjustment."
+  - name: distri
+    type: str
+    required: false
+    default: "'norm'"
+    description: "Distribution name without d/p/q/r prefix; must have a valid density function d<distri>."
+  - name: n
+    type: int
+    required: false
+    default: "512"
+    description: "Number of evaluation grid points (continuous distributions only)."
+  - name: fix_arg
+    type: dict
+    required: false
+    default: "None"
+    description: "Fixed distribution parameters in R parameterization."
+  - name: start_arg
+    type: dict
+    required: false
+    default: "None"
+    description: "Starting parameters for MLE, required for distributions with no natural default start (e.g. t, f)."
+  - name: na_rm
+    type: bool
+    required: false
+    default: "True"
+    description: "Silently remove missing values."
+  - name: show_legend
+    type: bool
+    required: false
+    default: "None"
+    description: "Whether to show the layer in the legend."
+  - name: inherit_aes
+    type: bool
+    required: false
+    default: "True"
+    description: "Whether to inherit plot aesthetics."
+  - name: kwargs
+    type: Any
+    required: false
+    description: "Forwarded to the layer."
+mutates: "execution_class=pure_function; validates distri eagerly (raises before construction); returns_kind=new_object"
+returns: "A ggplot2_py Layer backed by StatTheoDensity."
+requires: []
+writes: []
+examples:
+  - "stat_theodensity(distri='gamma')"
+  - "stat_theodensity(distri='t', start_arg={'df': 3})"
+  - "stat_theodensity(distri='nbinom', geom='point')"
+failure_fixes:
+  - when: "distri is not a supported distribution name."
+    suggest:
+      - "Pass a distri value that has a matching d<distri> density function, and is not one of multinom, hyper, wilcox, signrank."
+    explanation: "stat_theodensity raises via cli_abort('`distri` argument must have a valid density function called `d{distri}`') for unknown or unsupported distri values."
+related:
+  - ggh4x.StatTheoDensity

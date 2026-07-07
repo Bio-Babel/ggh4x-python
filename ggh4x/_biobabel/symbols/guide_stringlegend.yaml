@@ -1,0 +1,59 @@
+id: ggh4x.guide_stringlegend
+import_path: ggh4x.guide_stringlegend.guide_stringlegend
+kind: function
+signature: "def guide_stringlegend(title=waiver(), theme=None, position=None, direction=None, nrow=None, ncol=None, reverse=False, order=0) -> GuideStringlegend"
+purpose: "Build a compact legend guide rendering colour/fill mappings as coloured text strings instead of geom-key swatches."
+description: >
+  Requested via a scale's `guide=` argument (not added as a separate `+`
+  layer), e.g. `scale_colour_brewer(guide=guide_stringlegend())`.
+  `available_aes` is fixed to `["colour", "fill", "family", "fontface"]`.
+parameters:
+  - name: title
+    type: Any
+    required: false
+    default: "waiver()"
+    description: "Legend title; defaults to the scale's name."
+  - name: theme
+    type: Any
+    required: false
+    default: "None"
+    description: "Guide-local theme overrides."
+  - name: position
+    type: str
+    required: false
+    default: "None"
+    description: "Legend position."
+  - name: direction
+    type: str
+    required: false
+    default: "None"
+    description: "'horizontal' or 'vertical'."
+  - name: nrow
+    type: int
+    required: false
+    default: "None"
+    description: "Legend grid row count."
+  - name: ncol
+    type: int
+    required: false
+    default: "None"
+    description: "Legend grid column count."
+  - name: reverse
+    type: bool
+    required: false
+    default: "False"
+    description: "Reverse key order."
+  - name: order
+    type: int
+    required: false
+    default: "0"
+    description: "Ordering relative to other guides."
+mutates: "execution_class=pure_function; no external mutation; returns_kind=new_object"
+returns: "A GuideStringlegend instance, supplied to a scale's guide= argument or to guides()."
+requires: []
+writes: []
+examples:
+  - "scale_colour_brewer(palette='Dark2', guide=guide_stringlegend())"
+failure_fixes: []
+related:
+  - ggh4x.GuideStringlegend

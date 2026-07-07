@@ -1,0 +1,38 @@
+id: ggh4x.scale_y_manual
+import_path: ggh4x.multiscale.scale_y_manual
+kind: function
+signature: "def scale_y_manual(values, c_limits=None, position='left', **kwargs) -> ScaleManualPosition"
+purpose: "A hybrid discrete/continuous y position scale: discrete data placed at arbitrary continuous coordinates."
+description: >
+  Same semantics as `scale_x_manual` but targets `y`/`ymin`/`ymax`/`yend`
+  and defaults `position` to `"left"`. A standalone position scale added
+  the ordinary ggplot2 way (last-scale-wins); it does not participate in
+  the `MultiScale` `+`-merge mechanism.
+parameters:
+  - name: values
+    type: Any
+    required: true
+    description: "Numeric vector, optionally named dict, or a callable limits->numeric."
+  - name: c_limits
+    type: Any
+    required: false
+    default: "None"
+    description: "Length-2 continuous limits; NaN falls back to the value range; None uses the value range."
+  - name: position
+    type: str
+    required: false
+    default: "'left'"
+    description: "Axis position."
+  - name: kwargs
+    type: Any
+    required: false
+    description: "Forwarded to ggplot2_py.discrete_scale."
+mutates: "execution_class=pure_function; no in-place mutation; returns_kind=new_object"
+returns: "A ScaleManualPosition targeting y/ymin/ymax/yend."
+requires: []
+writes: []
+examples:
+  - "scale_y_manual(values=[1, 2, 4])"
+failure_fixes: []
+related:
+  - ggh4x.scale_x_manual

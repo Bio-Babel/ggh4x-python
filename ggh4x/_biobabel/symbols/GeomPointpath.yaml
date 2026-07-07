@@ -1,0 +1,20 @@
+id: ggh4x.GeomPointpath
+import_path: ggh4x.geom_pointpath.GeomPointpath
+kind: class
+signature: "GeomPointpath = GeomPointPath"
+purpose: "Alternate-capitalization alias for GeomPointPath (identical object, not a subclass)."
+description: >
+  A plain module-level alias (`GeomPointpath = GeomPointPath`), ported from
+  R's `GeomPointpath <- GeomPointPath`. It is the exact same class object as
+  `GeomPointPath`, not a distinct subclass — verified in the test suite via
+  an identity (`is`) check, not merely equality.
+parameters: []
+mutates: "execution_class=pure_function; identical to GeomPointPath in every respect; returns_kind=new_object"
+returns: "N/A (class alias); identical to GeomPointPath."
+requires: []
+writes: []
+examples: []
+failure_fixes: []
+related:
+  - ggh4x.GeomPointPath
+  - ggh4x.geom_pointpath

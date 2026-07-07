@@ -1,0 +1,51 @@
+id: ggh4x.help_secondary
+import_path: ggh4x.help_secondary.help_secondary
+kind: function
+signature: "def help_secondary(data=None, primary=(0, 1), secondary=(0, 1), method='range', na_rm=True, **kwargs)"
+purpose: "Construct a secondary ggplot axis whose transform is fitted from primary/secondary data."
+description: >
+  Fits a reverse transform mapping secondary-axis values onto the primary
+  axis's scale, using one of five methods (`"range"`, `"max"`, `"fit"`,
+  `"ccf"`, `"sortfit"`), and returns an `AxisSecondary` carrying that
+  transform plus a forward-projection callable. `primary`/`secondary` may be
+  column-name strings resolved against `data`. Intended to be called once
+  before building a plot, with the result then supplied as a scale's
+  `sec_axis=` argument.
+parameters:
+  - name: data
+    type: Any
+    required: false
+    default: "None"
+    description: "A DataFrame/mapping used to resolve primary/secondary when given as column-name strings."
+  - name: primary
+    type: Any
+    required: false
+    default: "(0, 1)"
+    description: "Primary axis values, or a column-name string resolved against data."
+  - name: secondary
+    type: Any
+    required: false
+    default: "(0, 1)"
+    description: "Secondary axis values, or a column-name string."
+  - name: method
+    type: str
+    required: false
+    default: "'range'"
+    description: "One of 'range', 'max', 'fit', 'ccf', 'sortfit'."
+  - name: na_rm
+    type: bool
+    required: false
+    default: "True"
+    description: "Whether to drop NA (applies to the 'range'/'max' methods)."
+  - name: kwargs
+    type: Any
+    required: false
+    description: "Forwarded to ggplot2_py.scale.sec_axis (e.g. name, breaks, labels, guide)."
+mutates: "execution_class=pure_function; mutates only the newly constructed AxisSecondary, never inputs; returns_kind=new_object"
+returns: "An AxisSecondary with .trans set to the fitted reverse transform and a .proj forward-projection attribute."
+requires: []
+writes: []
+examples:
+  - "scale_y_continuous(sec_axis=help_secondary(data=df, primary='y', secondary='y2'))"
+failure_fixes: []
+related: []
