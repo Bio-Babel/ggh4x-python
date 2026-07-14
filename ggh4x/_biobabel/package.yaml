@@ -16,42 +16,6 @@ r_package:
   fidelity: partial
 foundation:
   - ggplot2_py
-capabilities:
-  - extended-facets
-  - nested-strips
-  - per-panel-scales
-  - forced-panel-sizes
-  - custom-stat-layers
-  - custom-geoms
-  - multi-scale-layering
-  - manual-panel-layout
-domain_tags:
-  - visualization
-  - ggplot2-extension
-task_tags:
-  - faceted-plots
-  - hierarchical-facet-labels
-  - per-panel-scale-customization
-  - panel-size-control
-  - custom-stat-layers
-  - legend-customization
-triggers:
-  - "hierarchical/nested facet strip labels for multiple grouping variables"
-  - "facet panels need independent per-row/column position scales"
-  - "manual custom panel layout where one panel spans multiple grid cells"
-  - "forcing panel sizes to be absolute or proportionally equal"
-  - "multiple colour or fill scales layered on one ggplot"
-  - "fitting and drawing a theoretical probability distribution over data"
-  - "kernel-smoothed trend line without fitting a parametric model"
-  - "signed difference / crossover ribbon between two series"
-  - "run-length-encoded interval rectangles from a labeling variable"
-  - "text labels that must rotate to aim at a target point"
-  - "axes drawn inside the panel at a data-coordinate origin"
-  - "compact string-based legend instead of geom-key swatches"
-not_when:
-  - "the plotting backend is not ggplot2_py (e.g. matplotlib or plotnine workflows) — ggh4x subclasses ggplot2_py's ggproto facets/stats/geoms/scales/coords/positions directly and is not a generic plotting wrapper"
-  - "only vanilla ggplot2_py facet_wrap/facet_grid behavior is needed with no extra strip, per-panel-scale, or panel-size customization"
-  - "a general-purpose statistical summary is needed with no theoretical-distribution, rolling-kernel, signed-difference, or run-length-encoding semantics"
 templates:
   - id: ggh4x.facets_tutorial
     path: templates/facets_tutorial.py
